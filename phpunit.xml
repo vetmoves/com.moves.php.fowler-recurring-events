@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         verbose="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+>
+  <coverage includeUncoveredFiles="false">
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+    <report>
+      <html outputDirectory="./tests/coverage" lowUpperBound="80" highLowerBound="100"/>
+      <text outputFile="php://stdout" showUncoveredFiles="true"/>
+    </report>
+  </coverage>
+  <php>
+    <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+  </php>
+  <testsuites>
+    <testsuite name="Package Test Suite">
+      <directory suffix="Test.php">./tests/TestCases</directory>
+    </testsuite>
+  </testsuites>
+  <logging/>
+</phpunit>
+

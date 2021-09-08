@@ -1,0 +1,11 @@
+# Development
+/vendor
+*.backup
+/tests/coverage
+
+# Caches
+.phpunit.result.cache
+.php_cs.cache
+
+# PhpStorm
+**/.idea
