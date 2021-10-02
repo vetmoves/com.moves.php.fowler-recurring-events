@@ -16,10 +16,10 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
 class TEDayOfMonth implements ITemporalExpression
 {
     /** @var int Day of month (positive from beginning of month, negative from end of month) */
-    protected $dayOfMonth;
+    protected int $dayOfMonth;
 
     /** @var int Number of months between repetitions */
-    protected $frequency;
+    protected int $frequency;
 
     /**
      * TEDayOfMonth constructor.

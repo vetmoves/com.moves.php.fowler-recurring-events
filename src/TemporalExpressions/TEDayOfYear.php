@@ -16,13 +16,13 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
 class TEDayOfYear implements ITemporalExpression
 {
     /** @var int Day component of date */
-    protected $day;
+    protected int $day;
 
     /** @var int Month component of date */
-    protected $month;
+    protected int $month;
 
     /** @var int Number of years between repetitions */
-    protected $frequency;
+    protected int $frequency;
 
     /**
      * TEDayOfYear constructor.

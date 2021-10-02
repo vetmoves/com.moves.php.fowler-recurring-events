@@ -16,13 +16,13 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
 class TEDayOfWeekOfMonth implements ITemporalExpression
 {
     /** @var int Day of week (1 for Monday, 7 for Sunday) */
-    protected $dayOfWeek;
+    protected int $dayOfWeek;
 
     /** @var int Week of month (positive from beginning of month, negative from end of month) */
-    protected $weekOfMonth;
+    protected int $weekOfMonth;
 
     /** @var int Number of months between repetitions */
-    protected $frequency;
+    protected int $frequency;
 
     /**
      * TEDayOfWeekOfMonth constructor.
