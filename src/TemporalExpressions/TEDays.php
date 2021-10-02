@@ -13,30 +13,31 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
  * Temporal Expression for evaluating recurrence on a certain number of days.
  * E.g. "Every day", "Every other day", "Every 10 days"
  */
-class TEDays implements ITemporalExpression
-{
-    /** @var int Starting date of repetition pattern */
-    protected $start;
+class TEDays implements ITemporalExpression{
 
-    /** @var int Number of days between repetitions */
-    protected $frequency;
+	/** @var DateTimeInterface Starting date of repetition pattern */
+	protected DateTimeInterface $start;
 
-    /**
-     * TEDays constructor.
-     * @param DateTimeInterface $start Starting date of repetition pattern
-     * @param int $frequency Number of days between repetitions
-     */
-    public function __construct(DateTimeInterface $start, int $frequency = 1)
-    {
-        $this->start = $start;
-        $this->frequency = $frequency;
-    }
+	/** @var int Number of days between repetitions */
+	protected int $frequency;
 
-    public function includes(DateTimeInterface $date): bool
-    {
-        $start = (new Carbon($this->start))->setTime(0, 0);
-        $instance = (new Carbon($date))->setTime(0, 0);
+	/**
+	 * TEDays constructor.
+	 *
+	 * @param DateTimeInterface $start     Starting date of repetition pattern
+	 * @param int               $frequency Number of days between repetitions
+	 */
+	public function __construct(DateTimeInterface $start, int $frequency = 1){
 
-        return $instance > $start && $start->diffInDays($instance) % $this->frequency == 0;
-    }
+		$this->start = $start;
+		$this->frequency = $frequency;
+	}
+
+	public function includes(DateTimeInterface $date): bool{
+
+		$start = (new Carbon($this->start))->setTime(0, 0);
+		$instance = (new Carbon($date))->setTime(0, 0);
+
+		return $instance > $start && $start->diffInDays($instance) % $this->frequency == 0;
+	}
 }

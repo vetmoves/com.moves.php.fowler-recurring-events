@@ -6,25 +6,26 @@ use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfMonth;
 
-
 class TEDayOfMonthTest extends TestCase
 {
     public function testIncorrectDateReturnsFalse() {
-        $startOfMonth = new TEDayOfMonth(1);
+        $temporalObject = new TEDayOfMonth(1);
         $testDate = new Carbon('December 25, 2021');
-
-        $result = $startOfMonth->includes($testDate);
-
+        $result = $temporalObject->includes($testDate);
         $this->assertFalse($result);
     }
 
-    public function testCorrectDateReturnsTrue() {
-
-        $startOfMonth = new TEDayOfMonth(1);
+    public function testCorrectDateReturnsTrueFromStartOfMonth() {
+        $temporalObject = new TEDayOfMonth(1);
         $testDate = new Carbon('December 1, 2021');
+        $result = $temporalObject->includes($testDate);
+        $this->assertTrue($result);
+    }
 
-        $result = $startOfMonth->includes($testDate);
-
+    public function testCorrectDateReturnsTrueFromEndOfMonth() {
+        $temporalObject = new TEDayOfMonth(-5);
+        $testDate = new Carbon('October 27, 2021');
+        $result = $temporalObject->includes($testDate);
         $this->assertTrue($result);
     }
 }
