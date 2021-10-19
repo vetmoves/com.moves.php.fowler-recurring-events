@@ -15,7 +15,7 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
  */
 class TEDays implements ITemporalExpression
 {
-    /** @var int Starting date of repetition pattern */
+    /** @var DateTimeInterface Starting date of repetition pattern */
     protected $start;
 
     /** @var int Number of days between repetitions */
@@ -37,6 +37,12 @@ class TEDays implements ITemporalExpression
         $start = (new Carbon($this->start))->setTime(0, 0);
         $instance = (new Carbon($date))->setTime(0, 0);
 
-        return $instance > $start && $start->diffInDays($instance) % $this->frequency == 0;
+        return $instance >= $start
+            && $this->hasCorrectFrequencyFromStart($instance, $start);
+    }
+
+    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    {
+        return $start->diffInDays($instance) % $this->frequency == 0;
     }
 }

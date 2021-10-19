@@ -3,15 +3,15 @@
 namespace Tests\TestCases;
 
 use Carbon\Carbon;
-use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfMonth;
+use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfWeekOfMonth;
 use PHPUnit\Framework\TestCase;
 
-class TEDayOfMonthTest extends TestCase
+class TEDayOfWeekOfMonthTest extends TestCase
 {
     public function testCorrectDateBeforePatternStartReturnsFalse()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), 1);
-        $testDate = new Carbon('2020-01-01');
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, 1);
+        $testDate = new Carbon('2020-01-06');
 
         $result = $pattern->includes($testDate);
 
@@ -20,8 +20,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testBasicIncorrectDateReturnsFalse()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), 1);
-        $testDate = new Carbon('2021-12-25');
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, 1);
+        $testDate = new Carbon('2021-01-03');
 
         $result = $pattern->includes($testDate);
 
@@ -30,8 +30,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testBasicCorrectDateReturnsTrue()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), 1);
-        $testDate = new Carbon('2021-12-01');
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, 1);
+        $testDate = new Carbon('2021-01-04');
 
         $result = $pattern->includes($testDate);
 
@@ -40,8 +40,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testCorrectDateWithIncorrectFrequencyReturnsFalse()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), 1, 2);
-        $testDate = new Carbon('2021-12-01');
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, 1, 2);
+        $testDate = new Carbon('2021-02-01');
 
         $result = $pattern->includes($testDate);
 
@@ -50,8 +50,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testCorrectDateWithCorrectFrequencyReturnsTrue()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), 1, 2);
-        $testDate = new Carbon('2021-11-01');
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, 1, 2);
+        $testDate = new Carbon('2021-03-01');
 
         $result = $pattern->includes($testDate);
 
@@ -60,8 +60,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testCorrectDateFromEndWithIncorrectFrequencyReturnsFalse()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), -1, 2);
-        $testDate = new Carbon('2021-12-31');
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, -1, 2);
+        $testDate = new Carbon('2021-02-22');
 
         $result = $pattern->includes($testDate);
 
@@ -70,8 +70,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testCorrectDateFromEndWithCorrectFrequencyReturnsTrue()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), -1, 2);
-        $testDate = new Carbon('2021-11-30');
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, -1, 2);
+        $testDate = new Carbon('2021-03-29');
 
         $result = $pattern->includes($testDate);
 
@@ -80,8 +80,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testCorrectDateAcrossYearsWithIncorrectFrequencyReturnsFalse()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), 1, 5);
-        $testDate = new Carbon('2022-01-01'); //12 months later
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, 1, 5);
+        $testDate = new Carbon('2022-01-03'); //12 months later
 
         $result = $pattern->includes($testDate);
 
@@ -90,8 +90,8 @@ class TEDayOfMonthTest extends TestCase
 
     public function testCorrectDateAcrossYearsWithCorrectFrequencyReturnsTrue()
     {
-        $pattern = new TEDayOfMonth(new Carbon('2021-01-01'), 1, 5);
-        $testDate = new Carbon('2022-04-01'); //15 months later
+        $pattern = new TEDayOfWeekOfMonth(new Carbon('2021-01-01'), 1, 1, 5);
+        $testDate = new Carbon('2022-04-04'); //15 months later
 
         $result = $pattern->includes($testDate);
 

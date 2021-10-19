@@ -15,6 +15,9 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
  */
 class TEDayOfWeekOfMonth implements ITemporalExpression
 {
+    /** @var DateTimeInterface Starting date of repetition pattern */
+    protected $start;
+
     /** @var int Day of week (1 for Monday, 7 for Sunday) */
     protected $dayOfWeek;
 
@@ -26,12 +29,14 @@ class TEDayOfWeekOfMonth implements ITemporalExpression
 
     /**
      * TEDayOfWeekOfMonth constructor.
+     * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
      * @param int $weekOfMonth Week of month (positive from beginning of month, negative from end of month)
      * @param int $frequency Number of months between repetitions
      */
-    public function __construct(int $dayOfWeek, int $weekOfMonth, int $frequency = 1)
+    public function __construct(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth, int $frequency = 1)
     {
+        $this->start = $start;
         $this->dayOfWeek = $dayOfWeek;
         $this->weekOfMonth = $weekOfMonth;
         $this->frequency = $frequency;
@@ -39,33 +44,46 @@ class TEDayOfWeekOfMonth implements ITemporalExpression
 
     public function includes(DateTimeInterface $date): bool
     {
-        return $this->dayOfWeekMatches($date) && $this->weekOfMonthMatches($date);
+        $start = (new Carbon($this->start))->setTime(0, 0);
+        $instance = (new Carbon($date))->setTime(0, 0);
+
+        return $instance >= $start
+            && $this->dayOfWeekMatches($instance)
+            && $this->weekOfMonthMatches($instance)
+            && $this->hasCorrectFrequencyFromStart($instance, $start);
     }
 
-    protected function dayOfWeekMatches(DateTimeInterface $date): bool
+    protected function dayOfWeekMatches(Carbon $instance): bool
     {
-        return $this->dayOfWeek == (new Carbon($date))->dayOfWeek;
+        return $this->dayOfWeek == $instance->dayOfWeek;
     }
 
-    protected function weekOfMonthMatches(DateTimeInterface $date): bool
+    protected function weekOfMonthMatches(Carbon $instance): bool
     {
         return $this->weekOfMonth > 0 ?
-            $this->weekFromStartMatches($date) :
-            $this->weekFromEndMatches($date);
+            $this->weekFromStartMatches($instance) :
+            $this->weekFromEndMatches($instance);
     }
 
-    protected function weekFromStartMatches(DateTimeInterface $date): bool
+    protected function weekFromStartMatches(Carbon $instance): bool
     {
-        return $this->weekOfMonth == (new Carbon($date))->weekOfMonth;
+        return $this->weekOfMonth == $instance->weekOfMonth;
     }
 
-    protected function weekFromEndMatches(DateTimeInterface $date): bool
+    protected function weekFromEndMatches(Carbon $instance): bool
     {
-        $carbon = new Carbon($date);
-        $daysToMonthEnd = $carbon->daysInMonth - $carbon->day + 1;
+        $daysToMonthEnd = $instance->daysInMonth - $instance->day + 1;
 
-        $imaginaryDate = $carbon->copy()->setDate($carbon->year, $carbon->month, $daysToMonthEnd);
+        $imaginaryDate = $instance->copy()->setDate($instance->year, $instance->month, $daysToMonthEnd);
 
         return $imaginaryDate->weekOfMonth == abs($this->weekOfMonth);
+    }
+
+    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    {
+        $diffInYears = $instance->year - $start->year;
+        $diffInMonths = $instance->month + (12 * $diffInYears) - $start->month;
+
+        return $diffInMonths % $this->frequency == 0;
     }
 }

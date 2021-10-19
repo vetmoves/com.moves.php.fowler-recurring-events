@@ -15,6 +15,9 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
  */
 class TEDayOfYear implements ITemporalExpression
 {
+    /** @var DateTimeInterface Starting date of repetition pattern */
+    protected $start;
+
     /** @var int Day component of date */
     protected $day;
 
@@ -26,12 +29,14 @@ class TEDayOfYear implements ITemporalExpression
 
     /**
      * TEDayOfYear constructor.
+     * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $day Day component of date
      * @param int $month Month component of date
      * @param int $frequency Number of years between repetitions
      */
-    public function __construct(int $day, int $month, int $frequency = 1)
+    public function __construct(DateTimeInterface $start, int $day, int $month, int $frequency = 1)
     {
+        $this->start = $start;
         $this->day = $day;
         $this->month = $month;
         $this->frequency = $frequency;
@@ -39,7 +44,30 @@ class TEDayOfYear implements ITemporalExpression
 
     public function includes(DateTimeInterface $date): bool
     {
-        $carbon = new Carbon($date);
-        return $this->day == $carbon->day && $this->month == $carbon->month;
+        $start = (new Carbon($this->start))->setTime(0, 0);
+        $instance = (new Carbon($date))->setTime(0, 0);
+
+        return $instance >= $start
+            && $this->dateMatchesAccountingForLeapYear($instance)
+            && ($instance->year - $start->year) % $this->frequency == 0
+            && $this->hasCorrectFrequencyFromStart($instance, $start);
+    }
+
+    public function dateMatchesAccountingForLeapYear(Carbon $instance): bool
+    {
+        $dateMatchesExactly = $this->day == $instance->day && $this->month == $instance->month;
+
+        $leapDayMatchesMarch1 =  $this->month == 2 && $this->day == 29
+            && !$instance->isLeapYear()
+            && $instance->month == 3 && $instance->day == 1;
+
+        return $dateMatchesExactly || $leapDayMatchesMarch1;
+    }
+
+    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    {
+        $diffInYears = $instance->year - $start->year;
+
+        return $diffInYears % $this->frequency == 0;
     }
 }
