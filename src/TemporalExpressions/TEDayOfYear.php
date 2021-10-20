@@ -4,7 +4,7 @@ namespace Moves\FowlerRecurringEvents\TemporalExpressions;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
+use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
 
 /**
  * Class TEDays
@@ -13,7 +13,7 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
  * Temporal Expression for evaluating recurrence on a certain days of the year.
  * E.g. "Every year on December 31", "Every other year on February 2"
  */
-class TEDayOfYear implements ITemporalExpression
+class TEDayOfYear extends ACTemporalExpression
 {
     /** @var int Day component of date */
     protected $day;
@@ -22,24 +22,63 @@ class TEDayOfYear implements ITemporalExpression
     protected $month;
 
     /** @var int Number of years between repetitions */
-    protected $frequency;
+    protected $frequency = 1;
+
+    /**
+     * TEDayOfYear builder.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @param int $day Day component of date
+     * @param int $month Month component of date
+     * @return TEDayOfYear
+     */
+    public static function build(DateTimeInterface $start, int $day, int $month): TEDayOfYear
+    {
+        return new static($start, $day, $month);
+    }
 
     /**
      * TEDayOfYear constructor.
+     * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $day Day component of date
      * @param int $month Month component of date
-     * @param int $frequency Number of years between repetitions
      */
-    public function __construct(int $day, int $month, int $frequency = 1)
+    public function __construct(DateTimeInterface $start, int $day, int $month)
     {
+        $this->start = $start;
         $this->day = $day;
         $this->month = $month;
-        $this->frequency = $frequency;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function includes(DateTimeInterface $date): bool
     {
-        $carbon = new Carbon($date);
-        return $this->day == $carbon->day && $this->month == $carbon->month;
+        $start = (new Carbon($this->start))->setTime(0, 0);
+        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
+        $instance = (new Carbon($date))->setTime(0, 0);
+
+        return $instance >= $start
+            && (is_null($end) || $instance <= $end)
+            && $this->dateMatchesAccountingForLeapYear($instance)
+            && $this->hasCorrectFrequencyFromStart($instance, $start);
+    }
+
+    public function dateMatchesAccountingForLeapYear(Carbon $instance): bool
+    {
+        $dateMatchesExactly = $this->day == $instance->day && $this->month == $instance->month;
+
+        $leapDayMatchesMarch1 =  $this->month == 2 && $this->day == 29
+            && !$instance->isLeapYear()
+            && $instance->month == 3 && $instance->day == 1;
+
+        return $dateMatchesExactly || $leapDayMatchesMarch1;
+    }
+
+    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    {
+        $diffInYears = $instance->year - $start->year;
+
+        return $diffInYears % $this->frequency == 0;
     }
 }
