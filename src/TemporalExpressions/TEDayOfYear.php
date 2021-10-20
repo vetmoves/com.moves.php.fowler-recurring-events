@@ -61,7 +61,6 @@ class TEDayOfYear extends ACTemporalExpression
         return $instance >= $start
             && (is_null($end) || $instance <= $end)
             && $this->dateMatchesAccountingForLeapYear($instance)
-            && ($instance->year - $start->year) % $this->frequency == 0
             && $this->hasCorrectFrequencyFromStart($instance, $start);
     }
 
