@@ -67,6 +67,27 @@ $eventOccursOnOtherTargetDate = $eventPattern->includes($otherTargetDate);
 // Expected Result: false
 ```
 
+### Frequency and Pattern End Date
+The frequency and pattern end date properties are optional when constructing a temporal expression.
+To set values, for these optional properties, use the setter functions.
+```
+$eventPattern->setFrequency(2);
+$eventPattern->setEndDate(new DateTime('2022-01-01'));
+```
+
+### Builder Pattern
+You can use the builder pattern with setter method chaining for more convenience when building your temporal 
+expressions.
+```
+use Moves\FowlerRecurringEvents\TemporalExpressions\TEDaysOfWeek;
+
+$eventStart = new DateTime('2021-01-04');
+$eventEnd = new DateTime('2021-12-27');
+$eventPattern = TEDaysOfWeek::build($eventStart, 1)
+  ->setEndDate($eventEnd)
+  ->setFrequency(2);
+```
+
 ## Practical Usage and Advice
 The "Temporal Expression" algorithms are not intended to exist in a vacuum. In almost every instance, you will want
 to store a single "master" instance for the recurrence pattern, usually the first occurrence, along with the type
