@@ -10,7 +10,7 @@ class TEDaysOfWeekTest extends TestCase
 {
     public function testCorrectDateBeforePatternStartReturnsFalse()
     {
-        $pattern = new TEDaysOfWeek(new Carbon('2021-01-01'), 1);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1);
         $testDate = new Carbon('2020-12-28');
 
         $result = $pattern->includes($testDate);
@@ -18,18 +18,50 @@ class TEDaysOfWeekTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testCorrectDateOnPatternStartReturnsTrue()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-04'), 1);
+        $testDate = new Carbon('2021-01-04');
+
+        $result = $pattern->includes($testDate);
+
+        $this->assertTrue($result);
+    }
+
+    public function testCorrectDateAfterPatternEndReturnsFalse()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1)
+            ->setEndDate(new Carbon('2021-01-25'));
+        $testDate = new Carbon('2020-02-01');
+
+        $result = $pattern->includes($testDate);
+
+        $this->assertFalse($result);
+    }
+
+    public function testCorrectDateOnPatternEndReturnsTrue()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-04'), 1)
+            ->setEndDate(new Carbon('2021-01-25'));
+        $testDate = new Carbon('2021-01-25');
+
+        $result = $pattern->includes($testDate);
+
+        $this->assertTrue($result);
+    }
+
     public function testIntOrIntArrayTypingIsEnforced()
     {
         $this->expectException(\TypeError::class);
-        new TEDaysOfWeek(new Carbon('2021-01-01'), 'abc');
+        TEDaysOfWeek::build(new Carbon('2021-01-01'), 'abc');
 
         $this->expectException(\TypeError::class);
-        new TEDaysOfWeek(new Carbon('2021-01-01'), ['abc']);
+        TEDaysOfWeek::build(new Carbon('2021-01-01'), ['abc']);
     }
 
     public function testBasicIncorrectDateReturnsFalse()
     {
-        $pattern = new TEDaysOfWeek(new Carbon('2021-01-01'), 1);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1);
         $testDate = new Carbon('2021-01-02');
 
         $result = $pattern->includes($testDate);
@@ -39,7 +71,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testBasicCorrectDateReturnsTrue()
     {
-        $pattern = new TEDaysOfWeek(new Carbon('2021-01-01'), 1);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1);
         $testDate = new Carbon('2021-01-04');
 
         $result = $pattern->includes($testDate);
@@ -49,7 +81,8 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testCorrectDateWithIncorrectFrequencyReturnsFalse()
     {
-        $pattern = new TEDaysOfWeek(new Carbon('2021-01-01'), 1, 2);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1)
+            ->setFrequency(2);
         $testDate = new Carbon('2021-01-11');
 
         $result = $pattern->includes($testDate);
@@ -59,7 +92,8 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testCorrectDateWithCorrectFrequencyReturnsTrue()
     {
-        $pattern = new TEDaysOfWeek(new Carbon('2021-01-01'), 1, 2);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1)
+            ->setFrequency(2);
         $testDate = new Carbon('2021-01-18');
 
         $result = $pattern->includes($testDate);
@@ -69,7 +103,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testBasicMultipleCorrectDaysReturnTrue()
     {
-        $pattern = new TEDaysOfWeek(new Carbon('2021-01-01'), [1, 5]);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
         $testDate1 = new Carbon('2021-01-04');
         $testDate2 = new Carbon('2021-01-08');
 
@@ -98,7 +132,8 @@ class TEDaysOfWeekTest extends TestCase
      */
     public function testMultipleDaysResolveInOrderOfOccurrenceFromStart()
     {
-        $pattern = new TEDaysOfWeek(new Carbon('2021-01-01'), [1, 6], 2);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 6])
+            ->setFrequency(2);
         $testDate1 = new Carbon('2021-01-02');
         $testDate2 = new Carbon('2021-01-04');
         $testDate3 = new Carbon('2021-01-09');

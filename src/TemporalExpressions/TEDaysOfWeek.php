@@ -4,7 +4,7 @@ namespace Moves\FowlerRecurringEvents\TemporalExpressions;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
+use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
 use TypeError;
 
 /**
@@ -14,38 +14,49 @@ use TypeError;
  * Temporal Expression for evaluating recurrence on certain days of the week.
  * E.g. "Every week on Wednesday", "Every other week on Monday and Friday"
  */
-class TEDaysOfWeek implements ITemporalExpression
+class TEDaysOfWeek extends ACTemporalExpression
 {
-    /** @var DateTimeInterface Starting date of repetition pattern */
-    protected $start;
-
     /** @var int[] Array of days of week (1 for Monday, 7 for Sunday) */
     protected $days;
 
     /** @var int Number of weeks between repetitions */
-    protected $frequency;
+    protected $frequency = 1;
+
+    /**
+     * TEDaysOfWeek builder.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @param $days
+     * @return TEDaysOfWeek
+     */
+    public static function build(DateTimeInterface $start, $days): TEDaysOfWeek
+    {
+        return new static($start, $days);
+    }
 
     /**
      * TEDaysOfWeek constructor.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int[]|int $days Array of days of week (1 for Monday, 7 for Sunday)
-     * @param int $frequency Number of weeks between repetitions
      */
-    public function __construct(DateTimeInterface $start, $days, int $frequency = 1)
+    public function __construct(DateTimeInterface $start, $days)
     {
         $this->validateIntArrayOrInt($days);
 
         $this->start = $start;
         $this->days = is_array($days) ? $days : [$days];
-        $this->frequency = $frequency;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function includes(DateTimeInterface $date): bool
     {
         $start = (new Carbon($this->start))->setTime(0, 0);
+        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
         $instance = (new Carbon($date))->setTime(0, 0);
 
         return $instance >= $start
+            && (is_null($end) || $instance <= $end)
             && in_array((new Carbon($date))->dayOfWeek, $this->days)
             && $this->hasCorrectFrequencyFromStart($instance, $start);
     }

@@ -4,7 +4,7 @@ namespace Moves\FowlerRecurringEvents\TemporalExpressions;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
+use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
 
 /**
  * Class TEDayOfWeekOfMonth
@@ -13,11 +13,8 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
  * Temporal Expression for evaluating recurrence as a certain day of the week on a certain week of the month.
  * E.g. "The first Monday every month", "The second Wednesday every month", "The last Friday every month"
  */
-class TEDayOfWeekOfMonth implements ITemporalExpression
+class TEDayOfWeekOfMonth extends ACTemporalExpression
 {
-    /** @var DateTimeInterface Starting date of repetition pattern */
-    protected $start;
-
     /** @var int Day of week (1 for Monday, 7 for Sunday) */
     protected $dayOfWeek;
 
@@ -25,29 +22,44 @@ class TEDayOfWeekOfMonth implements ITemporalExpression
     protected $weekOfMonth;
 
     /** @var int Number of months between repetitions */
-    protected $frequency;
+    protected $frequency = 1;
+
+    /**
+     * TEDayOfWeekOfMonth builder.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
+     * @param int $weekOfMonth Week of month (positive from beginning of month, negative from end of month)
+     * @return TEDayOfWeekOfMonth
+     */
+    public static function build(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth): TEDayOfWeekOfMonth
+    {
+        return new static($start, $dayOfWeek, $weekOfMonth);
+    }
 
     /**
      * TEDayOfWeekOfMonth constructor.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
      * @param int $weekOfMonth Week of month (positive from beginning of month, negative from end of month)
-     * @param int $frequency Number of months between repetitions
      */
-    public function __construct(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth, int $frequency = 1)
+    public function __construct(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth)
     {
         $this->start = $start;
         $this->dayOfWeek = $dayOfWeek;
         $this->weekOfMonth = $weekOfMonth;
-        $this->frequency = $frequency;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function includes(DateTimeInterface $date): bool
     {
         $start = (new Carbon($this->start))->setTime(0, 0);
+        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
         $instance = (new Carbon($date))->setTime(0, 0);
 
         return $instance >= $start
+            && (is_null($end) || $instance <= $end)
             && $this->dayOfWeekMatches($instance)
             && $this->weekOfMonthMatches($instance)
             && $this->hasCorrectFrequencyFromStart($instance, $start);

@@ -4,7 +4,7 @@ namespace Moves\FowlerRecurringEvents\TemporalExpressions;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
+use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
 
 /**
  * Class TEDayOfMonth
@@ -13,36 +13,47 @@ use Moves\FowlerRecurringEvents\Contracts\ITemporalExpression;
  * Temporal Expression for evaluating recurrence as a certain day of the month.
  * E.g. "1st of every month", "10th of every month", "Last day of every month"
  */
-class TEDayOfMonth implements ITemporalExpression
+class TEDayOfMonth extends ACTemporalExpression
 {
-    /** @var DateTimeInterface Starting date of repetition pattern */
-    protected $start;
-
     /** @var int Day of month (positive from beginning of month, negative from end of month) */
     protected $dayOfMonth;
 
     /** @var int Number of months between repetitions */
-    protected $frequency;
+    protected $frequency = 1;
+
+    /**
+     * TEDayOfMonth builder.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
+     * @return TEDayOfMonth
+     */
+    public static function build(DateTimeInterface $start, int $dayOfMonth): TEDayOfMonth
+    {
+        return new static($start, $dayOfMonth);
+    }
 
     /**
      * TEDayOfMonth constructor.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
-     * @param int $frequency Number of months between repetitions
      */
-    public function __construct(DateTimeInterface $start, int $dayOfMonth, int $frequency = 1)
+    public function __construct(DateTimeInterface $start, int $dayOfMonth)
     {
         $this->start = $start;
         $this->dayOfMonth = $dayOfMonth;
-        $this->frequency = $frequency;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function includes(DateTimeInterface $date): bool
     {
         $start = (new Carbon($this->start))->setTime(0, 0);
+        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
         $instance = (new Carbon($date))->setTime(0, 0);
 
         return $instance >= $start
+            && (is_null($end) || $instance <= $end)
             && (
                 $this->dayOfMonth > 0 ?
                 $this->dayFromStartMatches($instance) :
