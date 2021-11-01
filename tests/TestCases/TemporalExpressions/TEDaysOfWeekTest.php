@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestCases;
+namespace Tests\TestCases\TemporalExpressions;
 
 use Carbon\Carbon;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDaysOfWeek;
@@ -150,5 +150,44 @@ class TEDaysOfWeekTest extends TestCase
 
         $result4= $pattern->includes($testDate4);
         $this->assertFalse($result4);
+    }
+
+    public function testNextSelectsCorrectDate()
+    {
+        //TODO: Implement with default frequency
+        $this->assertTrue(false);
+    }
+
+    public function testNextWithFrequencySelectsCorrectDate()
+    {
+        //TODO: Implement with non-default frequency
+        //Be sure to test with multiple weekdays selected (e.g. M, F, or M, T, W, T, F)
+        //And with the pattern starting on the earliest day in that week (i.e. Monday, for one of those two examples).
+        $this->assertTrue(false);
+    }
+
+    public function testNextWithFrequencyWithOffsetStartSelectsCorrectDate()
+    {
+        //TODO: Implement with non-default frequency
+        //Be sure to test with a start date in the middle of the week
+        //For example, if you select "Every 2 weeks on Monday and Friday",
+        //but you start your pattern on Friday, then starting at the beginning,
+        //the pattern should iterate as follows:
+        //Friday, the following Monday (3 days later), next Friday (11 days later), next Monday (3 days later).
+        //But if you started your pattern on Monday (as in the previous test), it would iterate as follows:
+        //Monday, the following Friday (4 days later), Monday in two weeks (10 days later), next friday (4 days later).
+        $this->assertTrue(false);
+    }
+
+    public function testNextWithInvalidCurrentDateSelectsCorrectDate()
+    {
+        //TODO: Implement with seek() to invalid date, should select next valid date
+        $this->assertTrue(false);
+    }
+
+    public function testNextDateAfterPatternEndReturnsNull()
+    {
+        //TODO: Implement by calling next() until the end of the pattern is passed
+        $this->assertTrue(false);
     }
 }

@@ -25,6 +25,20 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
     protected $frequency = 1;
 
     /**
+     * TEDayOfWeekOfMonth constructor.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
+     * @param int $weekOfMonth Week of month (positive from beginning of month, negative from end of month)
+     */
+    public function __construct(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth)
+    {
+        parent::__construct($start);
+
+        $this->dayOfWeek = $dayOfWeek;
+        $this->weekOfMonth = $weekOfMonth;
+    }
+
+    /**
      * TEDayOfWeekOfMonth builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
@@ -37,16 +51,11 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
     }
 
     /**
-     * TEDayOfWeekOfMonth constructor.
-     * @param DateTimeInterface $start Starting date of repetition pattern
-     * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
-     * @param int $weekOfMonth Week of month (positive from beginning of month, negative from end of month)
+     * @inheritDoc
      */
-    public function __construct(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth)
+    public function next(): ?DateTimeInterface
     {
-        $this->start = $start;
-        $this->dayOfWeek = $dayOfWeek;
-        $this->weekOfMonth = $weekOfMonth;
+        // TODO: Implement next() method.
     }
 
     /**

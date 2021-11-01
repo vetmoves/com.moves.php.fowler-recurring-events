@@ -23,6 +23,19 @@ class TEDaysOfWeek extends ACTemporalExpression
     protected $frequency = 1;
 
     /**
+     * TEDaysOfWeek constructor.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @param int[]|int $days Array of days of week (1 for Monday, 7 for Sunday)
+     */
+    public function __construct(DateTimeInterface $start, $days)
+    {
+        $this->validateIntArrayOrInt($days);
+
+        parent::__construct($start);
+        $this->days = is_array($days) ? $days : [$days];
+    }
+
+    /**
      * TEDaysOfWeek builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param $days
@@ -34,16 +47,11 @@ class TEDaysOfWeek extends ACTemporalExpression
     }
 
     /**
-     * TEDaysOfWeek constructor.
-     * @param DateTimeInterface $start Starting date of repetition pattern
-     * @param int[]|int $days Array of days of week (1 for Monday, 7 for Sunday)
+     * @inheritDoc
      */
-    public function __construct(DateTimeInterface $start, $days)
+    public function next(): ?DateTimeInterface
     {
-        $this->validateIntArrayOrInt($days);
-
-        $this->start = $start;
-        $this->days = is_array($days) ? $days : [$days];
+        // TODO: Implement next() method.
     }
 
     /**

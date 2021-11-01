@@ -22,6 +22,18 @@ class TEDayOfMonth extends ACTemporalExpression
     protected $frequency = 1;
 
     /**
+     * TEDayOfMonth constructor.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
+     */
+    public function __construct(DateTimeInterface $start, int $dayOfMonth)
+    {
+        parent::__construct($start);
+
+        $this->dayOfMonth = $dayOfMonth;
+    }
+
+    /**
      * TEDayOfMonth builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
@@ -33,14 +45,11 @@ class TEDayOfMonth extends ACTemporalExpression
     }
 
     /**
-     * TEDayOfMonth constructor.
-     * @param DateTimeInterface $start Starting date of repetition pattern
-     * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
+     * @inheritDoc
      */
-    public function __construct(DateTimeInterface $start, int $dayOfMonth)
+    public function next(): ?DateTimeInterface
     {
-        $this->start = $start;
-        $this->dayOfMonth = $dayOfMonth;
+        // TODO: Implement next() method.
     }
 
     /**

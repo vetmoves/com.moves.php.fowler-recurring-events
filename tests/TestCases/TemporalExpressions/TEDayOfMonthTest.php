@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestCases;
+namespace Tests\TestCases\TemporalExpressions;
 
 use Carbon\Carbon;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfMonth;
@@ -134,5 +134,29 @@ class TEDayOfMonthTest extends TestCase
         $result = $pattern->includes($testDate);
 
         $this->assertTrue($result);
+    }
+
+    public function testNextSelectsCorrectDate()
+    {
+        //TODO: Implement with default frequency
+        $this->assertTrue(false);
+    }
+
+    public function testNextWithFrequencySelectsCorrectDate()
+    {
+        //TODO: Implement with non-default frequency
+        $this->assertTrue(false);
+    }
+
+    public function testNextWithInvalidCurrentDateSelectsCorrectDate()
+    {
+        //TODO: Implement with seek() to invalid date, should select next valid date
+        $this->assertTrue(false);
+    }
+
+    public function testNextDateAfterPatternEndReturnsNull()
+    {
+        //TODO: Implement by calling next() until the end of the pattern is passed
+        $this->assertTrue(false);
     }
 }
