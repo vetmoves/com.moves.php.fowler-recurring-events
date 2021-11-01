@@ -136,6 +136,13 @@ class TEDayOfWeekOfMonthTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testIgnoredDateInPatternReturnsFalse()
+    {
+        //TODO: Implement by checking that a pattern without any ignored dates returns a test date as True
+        //Then, set that date to be ignored, then test again with the same pattern and date instance
+        //and the result should now be False
+    }
+
     public function testNextSelectsCorrectDate()
     {
         //TODO: Implement with default frequency

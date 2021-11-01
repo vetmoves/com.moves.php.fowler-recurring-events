@@ -1,11 +1,18 @@
 <?php
 
-namespace Tests\TestCases\TemporalExpressions\Contracts;
+namespace Tests\TestCases\Contracts;
 
 use PHPUnit\Framework\TestCase;
 
 class TemporalExpressionTest extends TestCase
 {
+    public function testIsIgnoredDoesNotCompareTime()
+    {
+        //TODO: Implement using TEDays (the simplest possible concrete Temporal Expression)
+        //The pattern type actually doesn't matter for this test because it shouldn't deal with pattern logic
+        $this->assertTrue(false);
+    }
+
     public function testIterationRewindResetsToPatternStart()
     {
         //TODO: Implement using TEDays (the simplest possible concrete Temporal Expression)

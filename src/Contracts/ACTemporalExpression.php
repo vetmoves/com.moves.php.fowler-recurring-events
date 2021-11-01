@@ -18,6 +18,9 @@ abstract class ACTemporalExpression
     /** @var DateTimeInterface Current date for pattern iteration */
     protected $current;
 
+    /** @var DateTimeInterface[] Dates in the pattern to ignore */
+    protected $ignoreDates;
+
     /**
      * ACTemporalExpression constructor.
      * @param DateTimeInterface $start Starting date of repetition pattern
@@ -46,6 +49,26 @@ abstract class ACTemporalExpression
     {
         $this->frequency = $frequency;
         return $this;
+    }
+
+    /**
+     * @param array $dates
+     * @return $this
+     */
+    public function setIgnoreDates(array $dates): ACTemporalExpression
+    {
+        $this->ignoreDates = $dates;
+        return $this;
+    }
+
+    /**
+     * @param DateTimeInterface $date
+     * @return bool
+     */
+    public function isIgnored(DateTimeInterface $date): bool
+    {
+        //TODO: Implement
+        //Warning: Be sure to only compare the date component, not the time component
     }
 
     /**
