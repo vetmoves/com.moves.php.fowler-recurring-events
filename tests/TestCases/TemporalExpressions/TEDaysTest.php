@@ -73,21 +73,37 @@ class TEDaysTest extends TestCase
 
     public function testIgnoredDateInPatternReturnsFalse()
     {
-        //TODO: Implement by checking that a pattern without any ignored dates returns a test date as True
-        //Then, set that date to be ignored, then test again with the same pattern and date instance
-        //and the result should now be False
+        $pattern = TEDays::build(new Carbon('2021-01-01'));
+        $testDate = new Carbon('2021-01-31');
+
+        $this->assertTrue($pattern->includes($testDate));
+
+        $pattern->setIgnoreDates([$testDate]);
+
+        $this->assertFalse($pattern->includes($testDate));
     }
 
     public function testNextSelectsCorrectDate()
     {
-        //TODO: Implement with default frequency
-        $this->assertTrue(false);
+        $pattern = TEDays::build(new Carbon('2021-01-01'));
+        $next = $pattern->next();
+
+        $this->assertEquals(
+            $next->toDateString(),
+            '2021-01-02'
+        );
     }
 
     public function testNextWithFrequencySelectsCorrectDate()
     {
-        //TODO: Implement with non-default frequency
-        $this->assertTrue(false);
+        $pattern = TEDays::build(new Carbon('2021-01-01'));
+        $pattern->setFrequency(7);
+        $next = $pattern->next();
+
+        $this->assertEquals(
+            $next->toDateString(),
+            '2021-01-08'
+        );
     }
 
     public function testNextWithInvalidCurrentDateSelectsCorrectDate()
@@ -98,7 +114,13 @@ class TEDaysTest extends TestCase
 
     public function testNextDateAfterPatternEndReturnsNull()
     {
-        //TODO: Implement by calling next() until the end of the pattern is passed
-        $this->assertTrue(false);
+        $pattern = TEDays::build(new Carbon('2021-01-01'))
+            ->setEndDate(new Carbon('2021-01-08'));
+
+        while ($pattern->valid()) {
+            $pattern->next();
+        }
+
+        $this->assertNull($pattern->next());
     }
 }

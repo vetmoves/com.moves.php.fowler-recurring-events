@@ -114,21 +114,37 @@ class TEDayOfYearTest extends TestCase
 
     public function testIgnoredDateInPatternReturnsFalse()
     {
-        //TODO: Implement by checking that a pattern without any ignored dates returns a test date as True
-        //Then, set that date to be ignored, then test again with the same pattern and date instance
-        //and the result should now be False
+        $pattern = TEDayOfYear::build(new Carbon('2021-01-01'), 1, 1);
+        $testDate = new Carbon('2029-01-01');
+
+        $this->assertTrue($pattern->includes($testDate));
+
+        $pattern->setIgnoreDates([$testDate]);
+
+        $this->assertFalse($pattern->includes($testDate));
     }
 
     public function testNextSelectsCorrectDate()
     {
-        //TODO: Implement with default frequency
-        $this->assertTrue(false);
+        $pattern = TEDayOfYear::build(new Carbon('2021-01-01'), 1, 1);
+        $next = $pattern->next();
+
+        $this->assertEquals(
+            $next->toDateString(),
+            '2022-01-01'
+        );
     }
 
     public function testNextWithFrequencySelectsCorrectDate()
     {
-        //TODO: Implement with non-default frequency
-        $this->assertTrue(false);
+        $pattern = TEDayofYear::build(new Carbon('2021-01-01'), 1, 1);
+        $pattern->setFrequency(9);
+        $next = $pattern->next();
+
+        $this->assertEquals(
+            $next->toDateString(),
+            '2030-01-01'
+        );
     }
 
     public function testNextWithInvalidCurrentDateSelectsCorrectDate()
@@ -139,7 +155,13 @@ class TEDayOfYearTest extends TestCase
 
     public function testNextDateAfterPatternEndReturnsNull()
     {
-        //TODO: Implement by calling next() until the end of the pattern is passed
-        $this->assertTrue(false);
+        $pattern = TEDayofYear::build(new Carbon('2021-01-01'), 1, 1)
+            ->setEndDate(new Carbon('2030-01-01'));
+
+        while ($pattern->valid()) {
+            $pattern->next();
+        }
+
+        $this->assertNull($pattern->next());
     }
 }

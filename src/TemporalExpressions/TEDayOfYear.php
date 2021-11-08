@@ -55,7 +55,14 @@ class TEDayOfYear extends ACTemporalExpression
      */
     public function next(): ?DateTimeInterface
     {
-        // TODO: Implement next() method.
+        $next = $this->current->addYears($this->frequency);
+
+        if ($this->includes($next)) {
+            $this->current = $next;
+            return $next;
+        }
+
+        return null;
     }
 
     /**
@@ -63,8 +70,6 @@ class TEDayOfYear extends ACTemporalExpression
      */
     public function includes(DateTimeInterface $date): bool
     {
-        //TODO: Add logic to check and ignore configured ignore dates
-
         $start = (new Carbon($this->start))->setTime(0, 0);
         $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
         $instance = (new Carbon($date))->setTime(0, 0);
@@ -72,7 +77,8 @@ class TEDayOfYear extends ACTemporalExpression
         return $instance >= $start
             && (is_null($end) || $instance <= $end)
             && $this->dateMatchesAccountingForLeapYear($instance)
-            && $this->hasCorrectFrequencyFromStart($instance, $start);
+            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && !$this->isIgnored($instance);
     }
 
     public function dateMatchesAccountingForLeapYear(Carbon $instance): bool

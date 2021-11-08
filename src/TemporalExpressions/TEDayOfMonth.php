@@ -49,7 +49,14 @@ class TEDayOfMonth extends ACTemporalExpression
      */
     public function next(): ?DateTimeInterface
     {
-        // TODO: Implement next() method.
+        $next = $this->current->addMonths($this->frequency);
+
+        if ($this->includes($next)) {
+            $this->current = $next;
+            return $next;
+        }
+
+        return null;
     }
 
     /**
@@ -70,7 +77,8 @@ class TEDayOfMonth extends ACTemporalExpression
                 $this->dayFromStartMatches($instance) :
                 $this->dayFromEndMatches($instance)
             )
-            && $this->hasCorrectFrequencyFromStart($instance, $start);
+            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && !$this->isIgnored($instance);
     }
 
     protected function dayFromStartMatches(Carbon $instance): bool

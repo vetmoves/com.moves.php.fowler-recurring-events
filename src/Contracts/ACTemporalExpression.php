@@ -27,7 +27,7 @@ abstract class ACTemporalExpression
      */
     public function __construct(DateTimeInterface $start)
     {
-        $this->start = $start;
+        $this->start = $start->copy();
         $this->current = $start;
     }
 
@@ -67,8 +67,11 @@ abstract class ACTemporalExpression
      */
     public function isIgnored(DateTimeInterface $date): bool
     {
-        //TODO: Implement
-        //Warning: Be sure to only compare the date component, not the time component
+        $ignoredDateStrings = array_map(function($d) {
+            return $d->toDateString();
+        }, $this->ignoreDates ? $this->ignoreDates : []);
+
+        return in_array($date->toDateString(), $ignoredDateStrings);
     }
 
     /**
@@ -77,7 +80,8 @@ abstract class ACTemporalExpression
      */
     public function rewind(): DateTimeInterface
     {
-        //TODO: Implement
+        $this->current = $this->start;
+        return $this->current;
     }
 
     /**
@@ -87,7 +91,10 @@ abstract class ACTemporalExpression
      */
     public function seek(DateTimeInterface $date): DateTimeInterface
     {
-        //TODO: Implement
+        if (static::includes($date)) {
+            $this->current = $date;
+        }
+        return $this->current;
     }
 
     /**
@@ -96,7 +103,7 @@ abstract class ACTemporalExpression
      */
     public function valid(): bool
     {
-        //TODO: Implement
+        return $this->includes($this->current);
     }
 
     /**
