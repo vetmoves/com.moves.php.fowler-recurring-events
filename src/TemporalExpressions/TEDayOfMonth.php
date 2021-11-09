@@ -57,8 +57,6 @@ class TEDayOfMonth extends ACTemporalExpression
      */
     public function includes(DateTimeInterface $date): bool
     {
-        //TODO: Add logic to check and ignore configured ignore dates
-
         $start = (new Carbon($this->start))->setTime(0, 0);
         $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
         $instance = (new Carbon($date))->setTime(0, 0);
@@ -70,7 +68,8 @@ class TEDayOfMonth extends ACTemporalExpression
                 $this->dayFromStartMatches($instance) :
                 $this->dayFromEndMatches($instance)
             )
-            && $this->hasCorrectFrequencyFromStart($instance, $start);
+            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && !$this->isIgnored($instance);
     }
 
     protected function dayFromStartMatches(Carbon $instance): bool
