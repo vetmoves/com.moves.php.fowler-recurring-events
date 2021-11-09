@@ -55,7 +55,37 @@ class TEDayOfYear extends ACTemporalExpression
      */
     public function next(): ?DateTimeInterface
     {
-        // TODO: Implement next() method.
+        if (is_null($this->current) || $this->current < $this->start)
+        {
+            $this->current = Carbon::create($this->start)->subDay();
+        }
+
+        $current = Carbon::create($this->current);
+        $next = $current->copy();
+
+        if (
+            ($next->month == $this->month && $next->day >= $this->day)
+            || $next->month > $this->month
+        ) {
+            $next->addYear();
+        }
+
+        $next->setMonth($this->month);
+        $next->setDay($this->day);
+
+        while ((is_null($this->end) || $next < $this->end) && !$this->includes($next))
+        {
+            $yearsToAdd = $this->frequency - ($next->diffInYears($this->start) % $this->frequency);
+            $next->addYears($yearsToAdd);
+        }
+
+        if (!is_null($this->end) && $next > $this->end) {
+            $this->current = null;
+        } else {
+            $this->current = $next;
+        }
+
+        return $this->current;
     }
 
     /**
