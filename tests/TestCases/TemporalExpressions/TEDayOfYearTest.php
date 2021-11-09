@@ -209,4 +209,16 @@ class TEDayOfYearTest extends TestCase
         $next = $pattern->next();
         $this->assertNull($next);
     }
+
+    public function testNextSkipsIgnoredDate()
+    {
+        $pattern = TEDayOfYear::build(new Carbon('2021-01-01'), 1, 1)
+            ->setIgnoreDates([Carbon::create('2022-01-01')]);
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2023-01-01', $next->format('Y-m-d'));
+    }
 }

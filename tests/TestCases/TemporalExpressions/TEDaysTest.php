@@ -148,4 +148,16 @@ class TEDaysTest extends TestCase
         $next = $pattern->next();
         $this->assertNull($next);
     }
+
+    public function testNextSkipsIgnoredDate()
+    {
+        $pattern = TEDays::build(new Carbon('2021-01-01'))
+            ->setIgnoreDates([Carbon::create('2021-01-02')]);
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-03', $next->format('Y-m-d'));
+    }
 }
