@@ -2,6 +2,7 @@
 
 namespace Moves\FowlerRecurringEvents\Contracts;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 
 abstract class ACTemporalExpression
@@ -67,8 +68,20 @@ abstract class ACTemporalExpression
      */
     public function isIgnored(DateTimeInterface $date): bool
     {
-        //TODO: Implement
-        //Warning: Be sure to only compare the date component, not the time component
+        $dateString = $date->format('Y-m-d');
+
+        foreach ($this->ignoreDates as $ignoreDate) {
+            if ($dateString == $ignoreDate->format('Y-m-d')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function current(): DateTimeInterface
+    {
+        return $this->current;
     }
 
     /**
@@ -77,7 +90,7 @@ abstract class ACTemporalExpression
      */
     public function rewind(): DateTimeInterface
     {
-        //TODO: Implement
+        return $this->seek($this->start);
     }
 
     /**
@@ -87,7 +100,9 @@ abstract class ACTemporalExpression
      */
     public function seek(DateTimeInterface $date): DateTimeInterface
     {
-        //TODO: Implement
+        $this->current = Carbon::create($date)->setTime(0, 0);
+
+        return $this->current;
     }
 
     /**
@@ -96,7 +111,8 @@ abstract class ACTemporalExpression
      */
     public function valid(): bool
     {
-        //TODO: Implement
+        return $this->current >= $this->start
+            && (is_null($this->end) || $this->current <= $this->end);
     }
 
     /**
