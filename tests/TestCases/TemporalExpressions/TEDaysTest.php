@@ -70,35 +70,82 @@ class TEDaysTest extends TestCase
 
         $this->assertTrue($result);
     }
-
+    
     public function testIgnoredDateInPatternReturnsFalse()
     {
-        //TODO: Implement by checking that a pattern without any ignored dates returns a test date as True
-        //Then, set that date to be ignored, then test again with the same pattern and date instance
-        //and the result should now be False
+        $pattern = TEDays::build(new Carbon('2021-01-01'));
+        $testDate = new Carbon('2021-01-02');
+
+        $this->assertTrue($pattern->includes($testDate));
+
+        $pattern->setIgnoreDates([$testDate]);
+
+        $this->assertFalse($pattern->includes($testDate));
     }
 
-    public function testNextSelectsCorrectDate()
+    public function testFirstNextWithStartInPatternSelectsStartDate()
     {
-        //TODO: Implement with default frequency
-        $this->assertTrue(false);
+        $pattern = TEDays::build(new Carbon('2021-01-01'));
+
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+    }
+
+    public function testSecondNextSelectsSecondValidDate()
+    {
+        $pattern = TEDays::build(new Carbon('2021-01-01'));
+
+        $pattern->next();
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-02', $next->format('Y-m-d'));
     }
 
     public function testNextWithFrequencySelectsCorrectDate()
     {
-        //TODO: Implement with non-default frequency
-        $this->assertTrue(false);
+        $pattern = TEDays::build(new Carbon('2021-01-01'))
+            ->setFrequency(2);
+
+        $pattern->next();
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-03', $next->format('Y-m-d'));
     }
 
-    public function testNextWithInvalidCurrentDateSelectsCorrectDate()
+    public function testNextWithFrequencyWithInvalidCurrentDateSelectsCorrectDate()
     {
-        //TODO: Implement with seek() to invalid date, should select next valid date
-        $this->assertTrue(false);
+        $pattern = TEDays::build(new Carbon('2021-01-01'), 1, 1)
+            ->setFrequency(2);
+
+        $pattern->seek(Carbon::create('2021-01-02'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-03', $next->format('Y-m-d'));
+    }
+
+    public function testNextDateBeforePatternStartReturnsFirstValidInstance()
+    {
+        $pattern = TEDays::build(new Carbon('2021-01-01'));
+
+        $pattern->seek(Carbon::create('2019-01-01'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
     }
 
     public function testNextDateAfterPatternEndReturnsNull()
     {
-        //TODO: Implement by calling next() until the end of the pattern is passed
-        $this->assertTrue(false);
+        $pattern = TEDays::build(new Carbon('2021-01-01'))
+            ->setFrequency(3)
+            ->setEndDate(Carbon::create('2021-01-31'));
+
+        $pattern->seek(Carbon::create('2021-01-30'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-31', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertNull($next);
     }
 }

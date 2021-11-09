@@ -42,7 +42,27 @@ class TEDays extends ACTemporalExpression
      */
     public function next(): ?DateTimeInterface
     {
-        // TODO: Implement next() method.
+        if (is_null($this->current) || $this->current < $this->start)
+        {
+            $this->current = Carbon::create($this->start)->subDay();
+        }
+
+        $current = Carbon::create($this->current);
+        $next = $current->copy()->addDay();
+
+        while ((is_null($this->end) || $next < $this->end) && !$this->includes($next))
+        {
+            $daysToAdd = $this->frequency - ($next->diffInDays($this->start) % $this->frequency);
+            $next->addDays($daysToAdd);
+        }
+
+        if (!is_null($this->end) && $next > $this->end) {
+            $this->current = null;
+        } else {
+            $this->current = $next;
+        }
+
+        return $this->current;
     }
 
     /**
