@@ -78,18 +78,17 @@ abstract class ACTemporalExpression
         return false;
     }
 
-    public function current(): DateTimeInterface
+    public function current(): ?DateTimeInterface
     {
         return $this->current;
     }
 
     /**
      * Reset pattern iteration to the pattern start date.
-     * @return DateTimeInterface The current date for pattern iteration
      */
-    public function rewind(): DateTimeInterface
+    public function rewind(): void
     {
-        return $this->seek($this->start);
+        $this->current = null;
     }
 
     /**
