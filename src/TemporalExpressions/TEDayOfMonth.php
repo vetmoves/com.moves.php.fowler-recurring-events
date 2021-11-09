@@ -49,7 +49,47 @@ class TEDayOfMonth extends ACTemporalExpression
      */
     public function next(): ?DateTimeInterface
     {
-        // TODO: Implement next() method.
+        if (is_null($this->current) || $this->current < $this->start)
+        {
+            $this->current = Carbon::create($this->start)->subDay();
+        }
+
+        $current = Carbon::create($this->current);
+        $next = $current->copy();
+
+        if ($this->dayOfMonth > 0)
+        {
+            if ($next->day >= $this->dayOfMonth) {
+                $next->addMonth();
+            }
+
+            $next->setDay($this->dayOfMonth);
+        }
+        else
+        {
+            $targetDay = $next->daysInMonth + 1 - $this->dayOfMonth;
+
+            if ($next->day >= $targetDay) {
+                $next->addMonth();
+            }
+
+            $newTargetDay = $next->daysInMonth + 1 - $this->dayOfMonth;
+            $next->setDay($newTargetDay);
+        }
+
+        while ((is_null($this->end) || $next < $this->end) && !$this->includes($next))
+        {
+            $monthsToAdd = $this->frequency - ($next->diffInMonths($this->start) % $this->frequency);
+            $next->addMonths($monthsToAdd);
+        }
+
+        if (!is_null($this->end) && $next > $this->end) {
+            $this->current = null;
+        } else {
+            $this->current = $next;
+        }
+
+        return $this->current;
     }
 
     /**

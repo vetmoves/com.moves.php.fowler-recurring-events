@@ -20,7 +20,7 @@ abstract class ACTemporalExpression
     protected $current;
 
     /** @var DateTimeInterface[] Dates in the pattern to ignore */
-    protected $ignoreDates;
+    protected $ignoreDates = [];
 
     /**
      * ACTemporalExpression constructor.
@@ -29,7 +29,6 @@ abstract class ACTemporalExpression
     public function __construct(DateTimeInterface $start)
     {
         $this->start = $start;
-        $this->current = $start;
     }
 
     /**
@@ -106,7 +105,7 @@ abstract class ACTemporalExpression
     }
 
     /**
-     * Determine whether the current iteration date of the pattern is valid.
+     * Determine whether the current iteration date of the pattern is in a valid range.
      * @return bool
      */
     public function valid(): bool
@@ -116,7 +115,15 @@ abstract class ACTemporalExpression
     }
 
     /**
-     * TODO: Implement for all child classes
+     * Determine whether the current iteration date of the pattern is included in the pattern.
+     * @return bool
+     */
+    public function includesCurrent(): bool
+    {
+        return $this->includes($this->current);
+    }
+
+    /**
      * Get the next iteration date of the pattern.
      * @return DateTimeInterface|null The next pattern iteration date. Null if invalid.
      */
