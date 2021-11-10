@@ -154,47 +154,167 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testIgnoredDateInPatternReturnsFalse()
     {
-        //TODO: Implement by checking that a pattern without any ignored dates returns a test date as True
-        //Then, set that date to be ignored, then test again with the same pattern and date instance
-        //and the result should now be False
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5]);
+        $testDate = new Carbon('2021-01-08');
+
+        $this->assertTrue($pattern->includes($testDate));
+
+        $pattern->setIgnoreDates([$testDate]);
+
+        $this->assertFalse($pattern->includes($testDate));
     }
 
-    public function testNextSelectsCorrectDate()
+    public function testFirstNextWithStartInPatternSelectsStartDate()
     {
-        //TODO: Implement with default frequency
-        $this->assertTrue(false);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5]);
+
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
     }
 
-    public function testNextWithFrequencySelectsCorrectDate()
+    public function testFirstNextWithStartNotInPatternSelectsFirstValidDate()
     {
-        //TODO: Implement with non-default frequency
-        //Be sure to test with multiple weekdays selected (e.g. M, F, or M, T, W, T, F)
-        //And with the pattern starting on the earliest day in that week (i.e. Monday, for one of those two examples).
-        $this->assertTrue(false);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [6]);
+
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-02', $next->format('Y-m-d'));
+    }
+
+    public function testNextWithOneWeekdaySelectsNextValidDate()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5]);
+
+        $pattern->next();
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-08', $next->format('Y-m-d'));
+    }
+
+    public function testNextWithMultipleWeekdaysSelectsCorrectSequence()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-04', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-08', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-11', $next->format('Y-m-d'));
+    }
+
+    public function testNextWithMultipleWeekdaysWithFrequencySelectsCorrectSequence()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+            ->setFrequency(2);
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-04', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-15', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-18', $next->format('Y-m-d'));
     }
 
     public function testNextWithFrequencyWithOffsetStartSelectsCorrectDate()
     {
-        //TODO: Implement with non-default frequency
-        //Be sure to test with a start date in the middle of the week
-        //For example, if you select "Every 2 weeks on Monday and Friday",
-        //but you start your pattern on Friday, then starting at the beginning,
-        //the pattern should iterate as follows:
-        //Friday, the following Monday (3 days later), next Friday (11 days later), next Monday (3 days later).
-        //But if you started your pattern on Monday (as in the previous test), it would iterate as follows:
-        //Monday, the following Friday (4 days later), Monday in two weeks (10 days later), next friday (4 days later).
-        $this->assertTrue(false);
+        /**
+         * This is to test patterns where the start date is in the middle of the week
+         * For example, if you select "Every 2 weeks on Monday and Friday",
+         * but you start your pattern on Friday, then starting at the beginning,
+         * the pattern should iterate as follows:
+         * Friday, the following Monday (3 days later), next Friday (11 days later), next Monday (3 days later).
+         * But if you started your pattern on Monday (as in the previous test), it would iterate as follows:
+         * Monday, the following Friday (4 days later), Monday in two weeks (10 days later), next friday (4 days later).
+         */
+
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+            ->setFrequency(2);
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-04', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-15', $next->format('Y-m-d'));
+
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-18', $next->format('Y-m-d'));
     }
 
     public function testNextWithInvalidCurrentDateSelectsCorrectDate()
     {
-        //TODO: Implement with seek() to invalid date, should select next valid date
-        $this->assertTrue(false);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
+
+        $pattern->seek(Carbon::create('2021-01-13'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-15', $next->format('Y-m-d'));
+    }
+
+    public function testNextWithFrequencyWithInvalidCurrentDateSelectsCorrectDate()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+            ->setFrequency(2);
+
+        $pattern->seek(Carbon::create('2021-01-06'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-15', $next->format('Y-m-d'));
+    }
+
+    public function testNextDateBeforePatternStartReturnsFirstValidInstance()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
+
+        $pattern->seek(Carbon::create('2019-01-01'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
     }
 
     public function testNextDateAfterPatternEndReturnsNull()
     {
-        //TODO: Implement by calling next() until the end of the pattern is passed
-        $this->assertTrue(false);
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5])
+            ->setEndDate(Carbon::create('2021-01-29'));
+
+        $pattern->seek(Carbon::create('2021-01-28'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-29', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertNull($next);
+    }
+
+    public function testNextSkipsIgnoredDate()
+    {
+        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+            ->setFrequency(2)
+            ->setIgnoreDates([Carbon::create('2021-01-15')]);
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-04', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-18', $next->format('Y-m-d'));
     }
 }
