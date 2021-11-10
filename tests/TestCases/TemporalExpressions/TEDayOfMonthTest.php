@@ -166,6 +166,24 @@ class TEDayOfMonthTest extends TestCase
         $this->assertEquals('2021-01-02', $next->format('Y-m-d'));
     }
 
+    public function testFirstNextWithNegativeDayWithStartInPatternSelectsStartDate()
+    {
+        $pattern = TEDayOfMonth::build(new Carbon('2021-01-31'), -1);
+
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-31', $next->format('Y-m-d'));
+    }
+
+    public function testFirstNextWithNegativeDayWithStartNotInPatternSelectsFirstValidDate()
+    {
+        $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), -1);
+
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-31', $next->format('Y-m-d'));
+    }
+
     public function testSecondNextSelectsSecondValidDate()
     {
         $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), 1);
@@ -174,6 +192,16 @@ class TEDayOfMonthTest extends TestCase
         $next = $pattern->next();
 
         $this->assertEquals('2021-02-01', $next->format('Y-m-d'));
+    }
+
+    public function testSecondNextWithNegativeDaySelectsSecondValidDate()
+    {
+        $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), -1);
+
+        $pattern->next();
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-02-28', $next->format('Y-m-d'));
     }
 
     public function testNextWithFrequencySelectsCorrectDate()
@@ -187,6 +215,22 @@ class TEDayOfMonthTest extends TestCase
         $this->assertEquals('2021-03-01', $next->format('Y-m-d'));
     }
 
+    public function testNextWithNegativeDayWithFrequencySelectsCorrectDate()
+    {
+        $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), -1)
+            ->setFrequency(2);
+
+        $this->assertTrue($pattern->includes(Carbon::create('2021-01-31')));
+        $this->assertFalse($pattern->includes(Carbon::create('2021-02-28')));
+        $this->assertTrue($pattern->includes(Carbon::create('2021-03-31')));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-01-31', $next->format('Y-m-d'));
+
+        $next = $pattern->next();
+        $this->assertEquals('2021-03-31', $next->format('Y-m-d'));
+    }
+
     public function testNextWithInvalidCurrentDateSelectsCorrectDate()
     {
         $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), 1);
@@ -195,6 +239,16 @@ class TEDayOfMonthTest extends TestCase
         $next = $pattern->next();
 
         $this->assertEquals('2021-05-01', $next->format('Y-m-d'));
+    }
+
+    public function testNextWithNegativeDayWithInvalidCurrentDateSelectsCorrectDate()
+    {
+        $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), -1);
+
+        $pattern->seek(Carbon::create('2021-04-15'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-04-30', $next->format('Y-m-d'));
     }
 
     public function testNextWithFrequencyWithInvalidCurrentDateSelectsCorrectDate()
@@ -208,6 +262,17 @@ class TEDayOfMonthTest extends TestCase
         $this->assertEquals('2021-07-01', $next->format('Y-m-d'));
     }
 
+    public function testNextWithNegativeDayWithFrequencyWithInvalidCurrentDateSelectsCorrectDate()
+    {
+        $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), -1)
+            ->setFrequency(3);
+
+        $pattern->seek(Carbon::create('2021-05-15'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-07-31', $next->format('Y-m-d'));
+    }
+
     public function testNextDateBeforePatternStartReturnsFirstValidInstance()
     {
         $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), 1)
@@ -217,6 +282,17 @@ class TEDayOfMonthTest extends TestCase
         $next = $pattern->next();
 
         $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
+    }
+
+    public function testNextDateBeforePatternStartWithNegativeDayReturnsFirstValidInstance()
+    {
+        $pattern = TEDayOfMonth::build(new Carbon('2021-01-01'), -1)
+            ->setFrequency(3);
+
+        $pattern->seek(Carbon::create('2020-01-01'));
+        $next = $pattern->next();
+
+        $this->assertEquals('2021-01-31', $next->format('Y-m-d'));
     }
 
     public function testNextDateAfterPatternEndReturnsNull()
