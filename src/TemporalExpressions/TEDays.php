@@ -19,6 +19,15 @@ class TEDays extends ACTemporalExpression
     protected $frequency = 1;
 
     /**
+     * TEDays constructor.
+     * @param DateTimeInterface $start Starting date of repetition pattern
+     */
+    public function __construct(DateTimeInterface $start)
+    {
+        parent::__construct($start);
+    }
+
+    /**
      * TEDays builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @return TEDays
@@ -29,12 +38,31 @@ class TEDays extends ACTemporalExpression
     }
 
     /**
-     * TEDays constructor.
-     * @param DateTimeInterface $start Starting date of repetition pattern
+     * @inheritDoc
      */
-    public function __construct(DateTimeInterface $start)
+    public function next(): ?DateTimeInterface
     {
-        $this->start = $start;
+        if (is_null($this->current) || $this->current < $this->start)
+        {
+            $this->current = Carbon::create($this->start)->subDay();
+        }
+
+        $current = Carbon::create($this->current);
+        $next = $current->copy()->addDay();
+
+        while ((is_null($this->end) || $next < $this->end) && !$this->includes($next))
+        {
+            $daysToAdd = $this->frequency - ($next->diffInDays($this->start) % $this->frequency);
+            $next->addDays($daysToAdd);
+        }
+
+        if (!is_null($this->end) && $next > $this->end) {
+            $this->current = null;
+        } else {
+            $this->current = $next;
+        }
+
+        return $this->current;
     }
 
     /**
@@ -48,7 +76,8 @@ class TEDays extends ACTemporalExpression
 
         return $instance >= $start
             && (is_null($end) || $instance <= $end)
-            && $this->hasCorrectFrequencyFromStart($instance, $start);
+            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && !$this->isIgnored($instance);
     }
 
     protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
