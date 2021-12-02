@@ -1,0 +1,74 @@
+{
+    "prepare-commit-msg": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "\\Ramsey\\CaptainHook\\PrepareConventionalCommit"
+            }
+        ]
+    },
+    "commit-msg": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "\\Moves\\ConventionalCommits\\CaptainHook\\ValidateConventionalCommit",
+                "options": {
+                    "config": {
+                        "typeCase": null,
+                        "types": [
+                            "build",
+                            "chore",
+                            "ci",
+                            "docs",
+                            "feat",
+                            "fix",
+                            "hotfix",
+                            "style",
+                            "perf",
+                            "refactor",
+                            "revert",
+                            "test",
+                            "Merge"
+                        ],
+                        "scopeCase": null,
+                        "scopeRequired": false,
+                        "scopes": [],
+                        "descriptionCase": null,
+                        "descriptionEndMark": null,
+                        "bodyRequired": false,
+                        "bodyWrapWidth": null,
+                        "requiredFooters": []
+                    }
+                }
+            }
+        ]
+    },
+    "pre-push": {
+        "enabled": false,
+        "actions": []
+    },
+    "pre-commit": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-commit": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-merge": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-checkout": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-rewrite": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-change": {
+        "enabled": false,
+        "actions": []
+    }
+}

@@ -1,0 +1,6 @@
+<?php
+
+return [
+    'tagPrefix' => '',
+    'path' => 'CHANGELOG-RELEASE_CANDIDATE.md'
+];
