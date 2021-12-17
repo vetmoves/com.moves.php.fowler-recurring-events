@@ -15,6 +15,10 @@ use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
  */
 class TEDayOfWeekOfMonth extends ACTemporalExpression
 {
+    //region Setup
+    /** @var string English representation of Temporal Expression type */
+    public const TYPE = 'Day of Week of Month';
+
     /** @var int Day of week (1 for Monday, 7 for Sunday) */
     protected $dayOfWeek;
 
@@ -39,6 +43,20 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
     }
 
     /**
+     * TEDayOfWeekOfMonth creator.
+     * @param array $options
+     * @return TEDayOfWeekOfMonth
+     */
+    public static function create(array $options): ACTemporalExpression
+    {
+        return static::build(
+            Carbon::create($options['start']),
+            $options['day_of_week'],
+            $options['week_of_month']
+        )->setupOptions($options);
+    }
+
+    /**
      * TEDayOfWeekOfMonth builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
@@ -50,6 +68,31 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
         return new static($start, $dayOfWeek, $weekOfMonth);
     }
 
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'day_of_week' => $this->dayOfWeek,
+            'week_of_month' => $this->weekOfMonth,
+        ]);
+    }
+    //endregion
+
+    //region Getters
+    public function getDayOfWeek(): int
+    {
+        return $this->dayOfWeek;
+    }
+
+    public function getWeekOfMonth(): int
+    {
+        return $this->weekOfMonth;
+    }
+    //endregion
+
+    //region Iteration
     /**
      * @inheritDoc
      *
@@ -198,24 +241,9 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
 
         return $this->current;
     }
+    //endregion
 
-    /**
-     * @inheritDoc
-     */
-    public function includes(DateTimeInterface $date): bool
-    {
-        $start = (new Carbon($this->start))->setTime(0, 0);
-        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
-        $instance = (new Carbon($date))->setTime(0, 0);
-
-        return $instance >= $start
-            && (is_null($end) || $instance <= $end)
-            && $this->dayOfWeekMatches($instance)
-            && $this->weekOfMonthMatches($instance)
-            && $this->hasCorrectFrequencyFromStart($instance, $start)
-            && !$this->isIgnored($instance);
-    }
-
+    //region Helpers
     protected function dayOfWeekMatches(Carbon $instance): bool
     {
         return $this->dayOfWeek == $instance->dayOfWeek;
@@ -259,5 +287,23 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
         $diffInMonths = $instance->month + (12 * $diffInYears) - $start->month;
 
         return $diffInMonths % $this->frequency == 0;
+    }
+    //endregion
+
+    /**
+     * @inheritDoc
+     */
+    public function includes(DateTimeInterface $date): bool
+    {
+        $start = (new Carbon($this->start))->setTime(0, 0);
+        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
+        $instance = (new Carbon($date))->setTime(0, 0);
+
+        return $instance >= $start
+            && (is_null($end) || $instance <= $end)
+            && $this->dayOfWeekMatches($instance)
+            && $this->weekOfMonthMatches($instance)
+            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && !$this->isIgnored($instance);
     }
 }

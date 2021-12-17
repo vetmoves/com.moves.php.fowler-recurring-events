@@ -8,10 +8,55 @@ use PHPUnit\Framework\TestCase;
 
 class TEDaysOfWeekTest extends TestCase
 {
+    public function testCreate()
+    {
+        $data = [
+            'days' => [1, 2],
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2,
+            'ignore_dates' => [
+                Carbon::create('2021-01-01')->toISOString()
+            ]
+        ];
+
+        $pattern = TEDaysOfWeek::create($data);
+
+        $this->assertEquals($data['days'], $pattern->getDays());
+        $this->assertEquals($data['start'], $pattern->getStart()->toIsoString());
+        $this->assertEquals($data['end'], $pattern->getEnd()->toIsoString());
+        $this->assertEquals($data['frequency'], $pattern->getFrequency());
+        $this->assertEquals(
+            $data['ignore_dates'],
+            array_map(function ($date) {
+                return $date->toIsoString();
+            }, $pattern->getIgnoreDates())
+        );
+        $this->assertEquals($data, $pattern->toArray());
+    }
+
+    public function testToArray()
+    {
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 2])
+            ->setEndDate(Carbon::create('2022-01-01'))
+            ->setFrequency(2)
+            ->setIgnoreDates([Carbon::create('2021-01-01')]);
+
+        $this->assertEquals([
+            'days' => [1, 2],
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2,
+            'ignore_dates' => [
+                Carbon::create('2021-01-01')->toISOString()
+            ]
+        ], $pattern->toArray());
+    }
+
     public function testCorrectDateBeforePatternStartReturnsFalse()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1);
-        $testDate = new Carbon('2020-12-28');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), 1);
+        $testDate = Carbon::create('2020-12-28');
 
         $result = $pattern->includes($testDate);
 
@@ -20,8 +65,8 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testCorrectDateOnPatternStartReturnsTrue()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-04'), 1);
-        $testDate = new Carbon('2021-01-04');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-04'), 1);
+        $testDate = Carbon::create('2021-01-04');
 
         $result = $pattern->includes($testDate);
 
@@ -30,9 +75,9 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testCorrectDateAfterPatternEndReturnsFalse()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1)
-            ->setEndDate(new Carbon('2021-01-25'));
-        $testDate = new Carbon('2020-02-01');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), 1)
+            ->setEndDate(Carbon::create('2021-01-25'));
+        $testDate = Carbon::create('2020-02-01');
 
         $result = $pattern->includes($testDate);
 
@@ -41,9 +86,9 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testCorrectDateOnPatternEndReturnsTrue()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-04'), 1)
-            ->setEndDate(new Carbon('2021-01-25'));
-        $testDate = new Carbon('2021-01-25');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-04'), 1)
+            ->setEndDate(Carbon::create('2021-01-25'));
+        $testDate = Carbon::create('2021-01-25');
 
         $result = $pattern->includes($testDate);
 
@@ -53,16 +98,16 @@ class TEDaysOfWeekTest extends TestCase
     public function testIntOrIntArrayTypingIsEnforced()
     {
         $this->expectException(\TypeError::class);
-        TEDaysOfWeek::build(new Carbon('2021-01-01'), 'abc');
+        TEDaysOfWeek::build(Carbon::create('2021-01-01'), 'abc');
 
         $this->expectException(\TypeError::class);
-        TEDaysOfWeek::build(new Carbon('2021-01-01'), ['abc']);
+        TEDaysOfWeek::build(Carbon::create('2021-01-01'), ['abc']);
     }
 
     public function testBasicIncorrectDateReturnsFalse()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1);
-        $testDate = new Carbon('2021-01-02');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), 1);
+        $testDate = Carbon::create('2021-01-02');
 
         $result = $pattern->includes($testDate);
 
@@ -71,8 +116,8 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testBasicCorrectDateReturnsTrue()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1);
-        $testDate = new Carbon('2021-01-04');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), 1);
+        $testDate = Carbon::create('2021-01-04');
 
         $result = $pattern->includes($testDate);
 
@@ -81,9 +126,9 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testCorrectDateWithIncorrectFrequencyReturnsFalse()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1)
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), 1)
             ->setFrequency(2);
-        $testDate = new Carbon('2021-01-11');
+        $testDate = Carbon::create('2021-01-11');
 
         $result = $pattern->includes($testDate);
 
@@ -92,9 +137,9 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testCorrectDateWithCorrectFrequencyReturnsTrue()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), 1)
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), 1)
             ->setFrequency(2);
-        $testDate = new Carbon('2021-01-18');
+        $testDate = Carbon::create('2021-01-18');
 
         $result = $pattern->includes($testDate);
 
@@ -103,9 +148,9 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testBasicMultipleCorrectDaysReturnTrue()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
-        $testDate1 = new Carbon('2021-01-04');
-        $testDate2 = new Carbon('2021-01-08');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5]);
+        $testDate1 = Carbon::create('2021-01-04');
+        $testDate2 = Carbon::create('2021-01-08');
 
         $result1 = $pattern->includes($testDate1);
         $this->assertTrue($result1);
@@ -132,12 +177,12 @@ class TEDaysOfWeekTest extends TestCase
      */
     public function testMultipleDaysResolveInOrderOfOccurrenceFromStart()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 6])
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 6])
             ->setFrequency(2);
-        $testDate1 = new Carbon('2021-01-02');
-        $testDate2 = new Carbon('2021-01-04');
-        $testDate3 = new Carbon('2021-01-09');
-        $testDate4 = new Carbon('2021-01-11');
+        $testDate1 = Carbon::create('2021-01-02');
+        $testDate2 = Carbon::create('2021-01-04');
+        $testDate3 = Carbon::create('2021-01-09');
+        $testDate4 = Carbon::create('2021-01-11');
 
         $result1 = $pattern->includes($testDate1);
         $this->assertTrue($result1);
@@ -154,8 +199,8 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testIgnoredDateInPatternReturnsFalse()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5]);
-        $testDate = new Carbon('2021-01-08');
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [5]);
+        $testDate = Carbon::create('2021-01-08');
 
         $this->assertTrue($pattern->includes($testDate));
 
@@ -166,7 +211,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testFirstNextWithStartInPatternSelectsStartDate()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5]);
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [5]);
 
         $next = $pattern->next();
 
@@ -175,7 +220,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testFirstNextWithStartNotInPatternSelectsFirstValidDate()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [6]);
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [6]);
 
         $next = $pattern->next();
 
@@ -184,7 +229,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextWithOneWeekdaySelectsNextValidDate()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5]);
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [5]);
 
         $pattern->next();
         $next = $pattern->next();
@@ -194,7 +239,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextWithMultipleWeekdaysSelectsCorrectSequence()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5]);
 
         $next = $pattern->next();
         $this->assertEquals('2021-01-01', $next->format('Y-m-d'));
@@ -211,7 +256,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextWithMultipleWeekdaysWithFrequencySelectsCorrectSequence()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5])
             ->setFrequency(2);
 
         $next = $pattern->next();
@@ -239,7 +284,7 @@ class TEDaysOfWeekTest extends TestCase
          * Monday, the following Friday (4 days later), Monday in two weeks (10 days later), next friday (4 days later).
          */
 
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5])
             ->setFrequency(2);
 
         $next = $pattern->next();
@@ -259,7 +304,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextWithInvalidCurrentDateSelectsCorrectDate()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5]);
 
         $pattern->seek(Carbon::create('2021-01-13'));
         $next = $pattern->next();
@@ -269,7 +314,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextWithFrequencyWithInvalidCurrentDateSelectsCorrectDate()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5])
             ->setFrequency(2);
 
         $pattern->seek(Carbon::create('2021-01-06'));
@@ -280,7 +325,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextDateBeforePatternStartReturnsFirstValidInstance()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5]);
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5]);
 
         $pattern->seek(Carbon::create('2019-01-01'));
         $next = $pattern->next();
@@ -290,7 +335,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextDateAfterPatternEndReturnsNull()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [5])
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [5])
             ->setEndDate(Carbon::create('2021-01-29'));
 
         $pattern->seek(Carbon::create('2021-01-28'));
@@ -304,7 +349,7 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testNextSkipsIgnoredDate()
     {
-        $pattern = TEDaysOfWeek::build(new Carbon('2021-01-01'), [1, 5])
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 5])
             ->setFrequency(2)
             ->setIgnoreDates([Carbon::create('2021-01-15')]);
 

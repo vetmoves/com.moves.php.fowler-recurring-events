@@ -15,6 +15,10 @@ use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
  */
 class TEDays extends ACTemporalExpression
 {
+    //region Setup
+    /** @var string English representation of Temporal Expression type */
+    public const TYPE = 'Days';
+
     /** @var int Number of days between repetitions */
     protected $frequency = 1;
 
@@ -28,6 +32,18 @@ class TEDays extends ACTemporalExpression
     }
 
     /**
+     * TEDays creator.
+     * @param array $options
+     * @return TEDays
+     */
+    public static function create(array $options): ACTemporalExpression
+    {
+        return static::build(
+            Carbon::create($options['start'])
+        )->setupOptions($options);
+    }
+
+    /**
      * TEDays builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @return TEDays
@@ -36,7 +52,9 @@ class TEDays extends ACTemporalExpression
     {
         return new static($start);
     }
+    //endregion
 
+    //region Iteration
     /**
      * @inheritDoc
      */
@@ -64,6 +82,14 @@ class TEDays extends ACTemporalExpression
 
         return $this->current;
     }
+    //endregion
+
+    //region Helpers
+    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    {
+        return $start->diffInDays($instance) % $this->frequency == 0;
+    }
+    //endregion
 
     /**
      * @inheritDoc
@@ -78,10 +104,5 @@ class TEDays extends ACTemporalExpression
             && (is_null($end) || $instance <= $end)
             && $this->hasCorrectFrequencyFromStart($instance, $start)
             && !$this->isIgnored($instance);
-    }
-
-    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
-    {
-        return $start->diffInDays($instance) % $this->frequency == 0;
     }
 }

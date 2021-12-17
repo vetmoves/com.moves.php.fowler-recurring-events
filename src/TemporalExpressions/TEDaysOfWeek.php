@@ -16,6 +16,10 @@ use TypeError;
  */
 class TEDaysOfWeek extends ACTemporalExpression
 {
+    //region Setup
+    /** @var string English representation of Temporal Expression type */
+    public const TYPE = 'Days of Week';
+
     /** @var int[] Array of days of week (1 for Monday, 7 for Sunday) */
     protected $days;
 
@@ -36,9 +40,22 @@ class TEDaysOfWeek extends ACTemporalExpression
     }
 
     /**
+     * TEDaysOfWeek creator.
+     * @param array $options
+     * @return TEDaysOfWeek
+     */
+    public static function create(array $options): ACTemporalExpression
+    {
+        return static::build(
+            Carbon::create($options['start']),
+            $options['days']
+        )->setupOptions($options);
+    }
+
+    /**
      * TEDaysOfWeek builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
-     * @param $days
+     * @param int|int[] $days
      * @return TEDaysOfWeek
      */
     public static function build(DateTimeInterface $start, $days): TEDaysOfWeek
@@ -46,6 +63,25 @@ class TEDaysOfWeek extends ACTemporalExpression
         return new static($start, $days);
     }
 
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'days' => $this->days,
+        ]);
+    }
+    //endregion
+
+    //region Getters
+    public function getDays(): array
+    {
+        return $this->days;
+    }
+    //endregion
+
+    //region Iteration
     /**
      * @inheritDoc
      *
@@ -154,23 +190,9 @@ class TEDaysOfWeek extends ACTemporalExpression
 
         return $this->current;
     }
+    //endregion
 
-    /**
-     * @inheritDoc
-     */
-    public function includes(DateTimeInterface $date): bool
-    {
-        $start = (new Carbon($this->start))->setTime(0, 0);
-        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
-        $instance = (new Carbon($date))->setTime(0, 0);
-
-        return $instance >= $start
-            && (is_null($end) || $instance <= $end)
-            && in_array((new Carbon($date))->dayOfWeek, $this->days)
-            && $this->hasCorrectFrequencyFromStart($instance, $start)
-            && !$this->isIgnored($instance);
-    }
-
+    //region Helpers
     protected function validateIntArrayOrInt($input)
     {
         $passes = true;
@@ -193,5 +215,22 @@ class TEDaysOfWeek extends ACTemporalExpression
     protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
     {
         return $start->diffInWeeks($instance) % $this->frequency == 0;
+    }
+    //endregion
+
+    /**
+     * @inheritDoc
+     */
+    public function includes(DateTimeInterface $date): bool
+    {
+        $start = (new Carbon($this->start))->setTime(0, 0);
+        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
+        $instance = (new Carbon($date))->setTime(0, 0);
+
+        return $instance >= $start
+            && (is_null($end) || $instance <= $end)
+            && in_array((new Carbon($date))->dayOfWeek, $this->days)
+            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && !$this->isIgnored($instance);
     }
 }

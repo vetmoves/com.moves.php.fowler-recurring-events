@@ -15,6 +15,10 @@ use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
  */
 class TEDayOfMonth extends ACTemporalExpression
 {
+    //region Setup
+    /** @var string English representation of Temporal Expression type */
+    public const TYPE = 'Day of Month';
+
     /** @var int Day of month (positive from beginning of month, negative from end of month) */
     protected $dayOfMonth;
 
@@ -34,6 +38,19 @@ class TEDayOfMonth extends ACTemporalExpression
     }
 
     /**
+     * TEDayOfMonth creator.
+     * @param array $options
+     * @return TEDayOfMonth
+     */
+    public static function create(array $options): ACTemporalExpression
+    {
+        return static::build(
+            Carbon::create($options['start']),
+            $options['day_of_month']
+        )->setupOptions($options);
+    }
+
+    /**
      * TEDayOfMonth builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
@@ -44,6 +61,25 @@ class TEDayOfMonth extends ACTemporalExpression
         return new static($start, $dayOfMonth);
     }
 
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'day_of_month' => $this->dayOfMonth,
+        ]);
+    }
+    //endregion
+
+    //region Getters
+    public function getDayOfMonth(): int
+    {
+        return $this->dayOfMonth;
+    }
+    //endregion
+
+    //region Iteration
     /**
      * @inheritDoc
      *
@@ -189,6 +225,30 @@ class TEDayOfMonth extends ACTemporalExpression
 
         return $this->current;
     }
+    //endregion
+
+    //region Helpers
+
+
+    protected function dayFromStartMatches(Carbon $instance): bool
+    {
+        return $this->dayOfMonth == $instance->day;
+    }
+
+    protected function dayFromEndMatches(Carbon $instance): bool
+    {
+        $daysInMonth = $instance->daysInMonth;
+        return ($daysInMonth + 1) - abs($this->dayOfMonth) == $instance->day;
+    }
+
+    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    {
+        $diffInYears = $instance->year - $start->year;
+        $diffInMonths = $instance->month + (12 * $diffInYears) - $start->month;
+
+        return $diffInMonths % $this->frequency == 0;
+    }
+    //endregion
 
     /**
      * @inheritDoc
@@ -208,24 +268,5 @@ class TEDayOfMonth extends ACTemporalExpression
             )
             && $this->hasCorrectFrequencyFromStart($instance, $start)
             && !$this->isIgnored($instance);
-    }
-
-    protected function dayFromStartMatches(Carbon $instance): bool
-    {
-        return $this->dayOfMonth == $instance->day;
-    }
-
-    protected function dayFromEndMatches(Carbon $instance): bool
-    {
-        $daysInMonth = $instance->daysInMonth;
-        return ($daysInMonth + 1) - abs($this->dayOfMonth) == $instance->day;
-    }
-
-    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
-    {
-        $diffInYears = $instance->year - $start->year;
-        $diffInMonths = $instance->month + (12 * $diffInYears) - $start->month;
-
-        return $diffInMonths % $this->frequency == 0;
     }
 }

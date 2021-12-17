@@ -4,9 +4,23 @@ namespace Moves\FowlerRecurringEvents\Contracts;
 
 use Carbon\Carbon;
 use DateTimeInterface;
+use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfMonth;
+use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfWeekOfMonth;
+use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfYear;
+use Moves\FowlerRecurringEvents\TemporalExpressions\TEDays;
+use Moves\FowlerRecurringEvents\TemporalExpressions\TEDaysOfWeek;
 
 abstract class ACTemporalExpression
 {
+    //region Setup
+    private const TYPE_MAP = [
+        TEDayOfMonth::TYPE => TEDayOfMonth::class,
+        TEDayOfWeekOfMonth::TYPE => TEDayOfWeekOfMonth::class,
+        TEDayOfYear::TYPE => TEDayOfYear::class,
+        TEDays::TYPE => TEDays::class,
+        TEDaysOfWeek::TYPE => TEDaysOfWeek::class,
+    ];
+
     /** @var DateTimeInterface Starting date of repetition pattern */
     protected $start;
 
@@ -32,6 +46,97 @@ abstract class ACTemporalExpression
     }
 
     /**
+     * @param string $json
+     * @return ACTemporalExpression|null
+     */
+    public static function fromJson(string $json): ?ACTemporalExpression
+    {
+        $data = json_decode($json, true);
+        return self::create($data);
+    }
+
+    /**
+     * @param array $options
+     * @return ACTemporalExpression|null
+     */
+    public static function create(array $options): ?ACTemporalExpression
+    {
+        if (isset($options['type'])) {
+            $class = array_key_exists($options['type'], self::TYPE_MAP)
+                ? self::TYPE_MAP[$options['type']]
+                : null;
+
+            if ($class) {
+                return $class::create($options);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $options
+     * @return $this
+     */
+    public function setupOptions(array $options): ACTemporalExpression
+    {
+        if (isset($options['frequency'])) {
+            $this->setFrequency($options['frequency']);
+        }
+
+        if (isset($options['end'])) {
+            $this->setEndDate(Carbon::create($options['end']));
+        }
+
+        if (isset($options['ignore_dates']) && is_array($options['ignore_dates'])) {
+            $dates = array_map(function($date) {
+                return Carbon::create($date);
+            }, $options['ignore_dates']);
+
+            $this->setIgnoreDates($dates);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $data = [
+            'start' => Carbon::create($this->start)->toISOString(),
+            'end' => Carbon::create($this->end)->toISOString(),
+            'frequency' => $this->frequency,
+            'ignore_dates' => array_map(function ($date) {
+                return Carbon::create($date)->toISOString();
+            }, $this->ignoreDates)
+        ];
+
+        return array_filter($data, function ($element) {
+            return !is_null($element);
+        });
+    }
+
+    /**
+     * @return string
+     */
+    public function toJson(): string
+    {
+        return json_encode($this->toArray());
+    }
+    //endregion
+
+    //region Setters/Getters
+    /**
+     * @return DateTimeInterface
+     */
+    public function getStart(): DateTimeInterface
+    {
+        return $this->start;
+    }
+
+    /**
      * @param DateTimeInterface $end
      * @return $this
      */
@@ -39,6 +144,14 @@ abstract class ACTemporalExpression
     {
         $this->end = $end;
         return $this;
+    }
+
+    /**
+     * @return DateTimeInterface
+     */
+    public function getEnd(): DateTimeInterface
+    {
+        return $this->end;
     }
 
     /**
@@ -52,6 +165,14 @@ abstract class ACTemporalExpression
     }
 
     /**
+     * @return int
+     */
+    public function getFrequency(): int
+    {
+        return $this->frequency;
+    }
+
+    /**
      * @param array $dates
      * @return $this
      */
@@ -61,6 +182,16 @@ abstract class ACTemporalExpression
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getIgnoreDates(): array
+    {
+        return $this->ignoreDates;
+    }
+    //endregion
+
+    //region Helpers
     /**
      * @param DateTimeInterface $date
      * @return bool
@@ -77,7 +208,9 @@ abstract class ACTemporalExpression
 
         return false;
     }
+    //endregion
 
+    //region Iteration
     public function current(): ?DateTimeInterface
     {
         return $this->current;
@@ -127,6 +260,7 @@ abstract class ACTemporalExpression
      * @return DateTimeInterface|null The next pattern iteration date. Null if invalid.
      */
     public abstract function next(): ?DateTimeInterface;
+    //endregion
 
     /**
      * Determine whether this Temporal Expression includes the given date.

@@ -15,6 +15,10 @@ use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
  */
 class TEDayOfYear extends ACTemporalExpression
 {
+    //region Setup
+    /** @var string English representation of Temporal Expression type */
+    public const TYPE = 'Day of Year';
+
     /** @var int Day component of date */
     protected $day;
 
@@ -39,6 +43,20 @@ class TEDayOfYear extends ACTemporalExpression
     }
 
     /**
+     * TEDayOfYear creator.
+     * @param array $options
+     * @return TEDayOfYear
+     */
+    public static function create(array $options): ACTemporalExpression
+    {
+        return static::build(
+            Carbon::create($options['start']),
+            $options['day'],
+            $options['month']
+        )->setupOptions($options);
+    }
+
+    /**
      * TEDayOfYear builder.
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $day Day component of date
@@ -50,6 +68,31 @@ class TEDayOfYear extends ACTemporalExpression
         return new static($start, $day, $month);
     }
 
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'day' => $this->day,
+            'month' => $this->month,
+        ]);
+    }
+    //endregion
+
+    //region Getters
+    public function getDay(): int
+    {
+        return $this->day;
+    }
+
+    public function getMonth(): int
+    {
+        return $this->month;
+    }
+    //endregion
+
+    //region Iteration
     /**
      * @inheritDoc
      */
@@ -87,23 +130,9 @@ class TEDayOfYear extends ACTemporalExpression
 
         return $this->current;
     }
+    //endregion
 
-    /**
-     * @inheritDoc
-     */
-    public function includes(DateTimeInterface $date): bool
-    {
-        $start = (new Carbon($this->start))->setTime(0, 0);
-        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
-        $instance = (new Carbon($date))->setTime(0, 0);
-
-        return $instance >= $start
-            && (is_null($end) || $instance <= $end)
-            && $this->dateMatchesAccountingForLeapYear($instance)
-            && $this->hasCorrectFrequencyFromStart($instance, $start)
-            && !$this->isIgnored($instance);
-    }
-
+    //region Helpers
     public function dateMatchesAccountingForLeapYear(Carbon $instance): bool
     {
         $dateMatchesExactly = $this->day == $instance->day && $this->month == $instance->month;
@@ -120,5 +149,22 @@ class TEDayOfYear extends ACTemporalExpression
         $diffInYears = $instance->year - $start->year;
 
         return $diffInYears % $this->frequency == 0;
+    }
+    //endregion
+
+    /**
+     * @inheritDoc
+     */
+    public function includes(DateTimeInterface $date): bool
+    {
+        $start = (new Carbon($this->start))->setTime(0, 0);
+        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
+        $instance = (new Carbon($date))->setTime(0, 0);
+
+        return $instance >= $start
+            && (is_null($end) || $instance <= $end)
+            && $this->dateMatchesAccountingForLeapYear($instance)
+            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && !$this->isIgnored($instance);
     }
 }
