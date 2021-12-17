@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.1.1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.1.0...1.1.1) (2021-12-17)
+### Bug Fixes
+
+* Include type in toArray ([81da2b](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/81da2b340a17c32f977a6632d91b4b23735aeb4a))
+
+
+---
+
 ## [1.1.0](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.0.0...1.1.0) (2021-12-17)
 ### Features
 
