@@ -11,6 +11,7 @@ class TEDaysOfWeekTest extends TestCase
     public function testCreate()
     {
         $data = [
+            'type' => TEDaysOfWeek::TYPE,
             'days' => [1, 2],
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
@@ -43,6 +44,7 @@ class TEDaysOfWeekTest extends TestCase
             ->setIgnoreDates([Carbon::create('2021-01-01')]);
 
         $this->assertEquals([
+            'type' => TEDaysOfWeek::TYPE,
             'days' => [1, 2],
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),

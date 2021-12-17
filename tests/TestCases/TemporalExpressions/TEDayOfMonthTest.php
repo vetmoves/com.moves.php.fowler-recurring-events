@@ -11,6 +11,7 @@ class TEDayOfMonthTest extends TestCase
     public function testCreate()
     {
         $data = [
+            'type' => TEDayOfMonth::TYPE,
             'day_of_month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
@@ -43,6 +44,7 @@ class TEDayOfMonthTest extends TestCase
             ->setIgnoreDates([Carbon::create('2021-01-01')]);
 
         $this->assertEquals([
+            'type' => TEDayOfMonth::TYPE,
             'day_of_month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),

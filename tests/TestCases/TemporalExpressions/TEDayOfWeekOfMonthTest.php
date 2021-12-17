@@ -11,6 +11,7 @@ class TEDayOfWeekOfMonthTest extends TestCase
     public function testCreate()
     {
         $data = [
+            'type' => TEDayOfWeekOfMonth::TYPE,
             'day_of_week' => 1,
             'week_of_month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),
@@ -45,6 +46,7 @@ class TEDayOfWeekOfMonthTest extends TestCase
             ->setIgnoreDates([Carbon::create('2021-01-01')]);
 
         $this->assertEquals([
+            'type' => TEDayOfWeekOfMonth::TYPE,
             'day_of_week' => 1,
             'week_of_month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),

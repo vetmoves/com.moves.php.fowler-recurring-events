@@ -63,6 +63,7 @@ class TemporalExpressionTest extends TestCase
             ->setIgnoreDates([Carbon::create('2021-01-01')]);
 
         $this->assertEquals([
+            'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
             'frequency' => 2,

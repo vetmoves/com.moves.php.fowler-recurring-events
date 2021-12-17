@@ -105,6 +105,7 @@ abstract class ACTemporalExpression
     public function toArray(): array
     {
         $data = [
+            'type' => static::TYPE,
             'start' => Carbon::create($this->start)->toISOString(),
             'end' => Carbon::create($this->end)->toISOString(),
             'frequency' => $this->frequency,

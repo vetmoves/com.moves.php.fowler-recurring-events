@@ -11,6 +11,7 @@ class TEDayOfYearTest extends TestCase
     public function testCreate()
     {
         $data = [
+            'type' => TEDayOfYear::TYPE,
             'day' => 1,
             'month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),
@@ -45,6 +46,7 @@ class TEDayOfYearTest extends TestCase
             ->setIgnoreDates([Carbon::create('2021-01-01')]);
 
         $this->assertEquals([
+            'type' => TEDayOfYear::TYPE,
             'day' => 1,
             'month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),
