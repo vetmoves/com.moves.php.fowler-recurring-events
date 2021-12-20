@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.2.1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.2.0...1.2.1) (2021-12-20)
+### Bug Fixes
+
+* Fix validation rules keying, add test ([04ab19](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/04ab19c9c588a32b8d4448683176f419b292a333))
+
+
+---
+
 ## [1.2.0](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.1.1...1.2.0) (2021-12-20)
 ### Features
 
