@@ -101,6 +101,24 @@ class TemporalExpressionTest extends TestCase
         $this->assertArrayHasKey('days.*', $rules);
     }
 
+    public function testValidationRulesWithKey() {
+        $rules = ACTemporalExpression::VALIDATION_RULES('options.recurrence_pattern');
+
+        $this->assertArrayHasKey('options.recurrence_pattern.type', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.start', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.end', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.frequency', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.ignore_dates', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.ignore_dates.*', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.day_of_month', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.day_of_week', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.week_of_month', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.day', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.month', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.days', $rules);
+        $this->assertArrayHasKey('options.recurrence_pattern.days.*', $rules);
+    }
+
     public function testIsIgnoredDoesNotCompareTime()
     {
         $pattern = TEDays::build(Carbon::create('2021-01-01'));

@@ -81,7 +81,7 @@ class TEDayOfYear extends ACTemporalExpression
 
     protected static function VALIDATION_RULES_TYPE(string $key = null): array
     {
-        $prefix = empty($key) ? '' : "${$key}.";
+        $prefix = empty($key) ? '' : "${key}.";
 
         $class = static::class;
 

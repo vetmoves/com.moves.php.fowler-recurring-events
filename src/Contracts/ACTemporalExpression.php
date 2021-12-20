@@ -130,7 +130,7 @@ abstract class ACTemporalExpression
 
     protected static function VALIDATION_RULES_SHARED(string $key = null): array
     {
-        $prefix = empty($key) ? '' : "${$key}.";
+        $prefix = empty($key) ? '' : "${key}.";
 
         return [
             $prefix . 'type' => ['required', Rule::in(self::TYPE_MAP)],
