@@ -78,6 +78,20 @@ class TEDayOfYear extends ACTemporalExpression
             'month' => $this->month,
         ]);
     }
+
+    protected static function VALIDATION_RULES_TYPE(string $key = null): array
+    {
+        $prefix = empty($key) ? '' : "${$key}.";
+
+        $class = static::class;
+
+        $requiredIfRule = "required_if:type,$class";
+
+        return [
+            $prefix . 'day' => "$requiredIfRule|integer|gte:1|lte:31",
+            $prefix . 'month' => "$requiredIfRule|integer|gte:1|lte:12"
+        ];
+    }
     //endregion
 
     //region Getters

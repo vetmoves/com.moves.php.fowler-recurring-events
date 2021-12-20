@@ -72,6 +72,20 @@ class TEDaysOfWeek extends ACTemporalExpression
             'days' => $this->days,
         ]);
     }
+
+    protected static function VALIDATION_RULES_TYPE(string $key = null): array
+    {
+        $prefix = empty($key) ? '' : "${$key}.";
+
+        $class = static::class;
+
+        $requiredIfRule = "required_if:type,$class";
+
+        return [
+            $prefix . 'days' => "$requiredIfRule|array",
+            $prefix . 'days.*' => 'required|integer|gte:1|lte:7|distinct',
+        ];
+    }
     //endregion
 
     //region Getters

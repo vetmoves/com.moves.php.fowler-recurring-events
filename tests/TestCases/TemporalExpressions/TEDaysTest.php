@@ -52,6 +52,17 @@ class TEDaysTest extends TestCase
         ], $pattern->toArray());
     }
 
+    public function testValidationRules() {
+        $rules = TEDays::VALIDATION_RULES();
+
+        $this->assertArrayHasKey('type', $rules);
+        $this->assertArrayHasKey('start', $rules);
+        $this->assertArrayHasKey('end', $rules);
+        $this->assertArrayHasKey('frequency', $rules);
+        $this->assertArrayHasKey('ignore_dates', $rules);
+        $this->assertArrayHasKey('ignore_dates.*', $rules);
+    }
+
     public function testCorrectDateBeforePatternStartReturnsFalse()
     {
         $pattern = TEDays::build(Carbon::create('2021-01-01'));

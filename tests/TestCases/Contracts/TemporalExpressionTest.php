@@ -83,6 +83,24 @@ class TemporalExpressionTest extends TestCase
         $this->assertEquals(json_encode($pattern->toArray()), $pattern->toJson());
     }
 
+    public function testValidationRules() {
+        $rules = ACTemporalExpression::VALIDATION_RULES();
+
+        $this->assertArrayHasKey('type', $rules);
+        $this->assertArrayHasKey('start', $rules);
+        $this->assertArrayHasKey('end', $rules);
+        $this->assertArrayHasKey('frequency', $rules);
+        $this->assertArrayHasKey('ignore_dates', $rules);
+        $this->assertArrayHasKey('ignore_dates.*', $rules);
+        $this->assertArrayHasKey('day_of_month', $rules);
+        $this->assertArrayHasKey('day_of_week', $rules);
+        $this->assertArrayHasKey('week_of_month', $rules);
+        $this->assertArrayHasKey('day', $rules);
+        $this->assertArrayHasKey('month', $rules);
+        $this->assertArrayHasKey('days', $rules);
+        $this->assertArrayHasKey('days.*', $rules);
+    }
+
     public function testIsIgnoredDoesNotCompareTime()
     {
         $pattern = TEDays::build(Carbon::create('2021-01-01'));

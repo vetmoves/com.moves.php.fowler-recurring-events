@@ -4,6 +4,7 @@ namespace Moves\FowlerRecurringEvents\Contracts;
 
 use Carbon\Carbon;
 use DateTimeInterface;
+use Illuminate\Validation\Rule;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfMonth;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfWeekOfMonth;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfYear;
@@ -125,6 +126,45 @@ abstract class ACTemporalExpression
     public function toJson(): string
     {
         return json_encode($this->toArray());
+    }
+
+    protected static function VALIDATION_RULES_SHARED(string $key = null): array
+    {
+        $prefix = empty($key) ? '' : "${$key}.";
+
+        return [
+            $prefix . 'type' => ['required', Rule::in(self::TYPE_MAP)],
+            $prefix . 'start' => 'required|date',
+            $prefix . 'end' => 'nullable|date',
+            $prefix . 'frequency' => 'required|integer',
+            $prefix . 'ignore_dates' => 'nullable|array',
+            $prefix . 'ignore_dates.*' => 'required|date',
+        ];
+    }
+
+    protected static function VALIDATION_RULES_TYPE(string $key = null): array
+    {
+        $rules = [];
+
+        foreach(self::TYPE_MAP as $type) {
+            $reflector = new \ReflectionMethod($type, 'VALIDATION_RULES_TYPE');
+
+            $isOverridden = $reflector->getDeclaringClass()->getName() != self::class;
+
+            if ($isOverridden) {
+                $rules = array_merge($rules, $type::VALIDATION_RULES_TYPE($key));
+            }
+        }
+
+        return $rules;
+    }
+
+    public static function VALIDATION_RULES(string $key = null): array
+    {
+        return array_merge(
+            static::VALIDATION_RULES_SHARED($key),
+            static::VALIDATION_RULES_TYPE($key)
+        );
     }
     //endregion
 

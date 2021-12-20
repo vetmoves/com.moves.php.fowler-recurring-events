@@ -58,6 +58,19 @@ class TEDayOfWeekOfMonthTest extends TestCase
         ], $pattern->toArray());
     }
 
+    public function testValidationRules() {
+        $rules = TEDayOfWeekOfMonth::VALIDATION_RULES();
+
+        $this->assertArrayHasKey('type', $rules);
+        $this->assertArrayHasKey('start', $rules);
+        $this->assertArrayHasKey('end', $rules);
+        $this->assertArrayHasKey('frequency', $rules);
+        $this->assertArrayHasKey('ignore_dates', $rules);
+        $this->assertArrayHasKey('ignore_dates.*', $rules);
+        $this->assertArrayHasKey('day_of_week', $rules);
+        $this->assertArrayHasKey('week_of_month', $rules);
+    }
+
     public function testCorrectDateBeforePatternStartReturnsFalse()
     {
         $pattern = TEDayOfWeekOfMonth::build(Carbon::create('2021-01-01'), 1, 1);

@@ -78,6 +78,20 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
             'week_of_month' => $this->weekOfMonth,
         ]);
     }
+
+    protected static function VALIDATION_RULES_TYPE(string $key = null): array
+    {
+        $prefix = empty($key) ? '' : "${$key}.";
+
+        $class = static::class;
+
+        $requiredIfRule = "required_if:type,$class";
+
+        return [
+            $prefix . 'day_of_week' => "$requiredIfRule|integer|gte:1|lte:7",
+            $prefix . 'week_of_month' => "$requiredIfRule|integer|gte:-6|lte:6"
+        ];
+    }
     //endregion
 
     //region Getters

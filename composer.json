@@ -13,7 +13,8 @@
     "require": {
         "php": "^7.3|^8.0",
         "nesbot/carbon": "^2.53",
-        "ext-json": "*"
+        "ext-json": "*",
+        "illuminate/validation": "^8.76"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

@@ -70,6 +70,19 @@ class TEDayOfMonth extends ACTemporalExpression
             'day_of_month' => $this->dayOfMonth,
         ]);
     }
+
+    protected static function VALIDATION_RULES_TYPE(string $key = null): array
+    {
+        $prefix = empty($key) ? '' : "${$key}.";
+
+        $class = static::class;
+
+        $requiredIfRule = "required_if:type,$class";
+
+        return [
+            $prefix . 'day_of_month' => "$requiredIfRule|integer|gte:-31|lte:31"
+        ];
+    }
     //endregion
 
     //region Getters
