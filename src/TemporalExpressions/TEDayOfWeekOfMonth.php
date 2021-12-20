@@ -83,7 +83,7 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
     {
         $prefix = empty($key) ? '' : "${key}.";
 
-        $class = static::class;
+        $class = static::TYPE;
 
         $requiredIfRule = "required_if:type,$class";
 
