@@ -133,7 +133,7 @@ abstract class ACTemporalExpression
         $prefix = empty($key) ? '' : "${key}.";
 
         return [
-            $prefix . 'type' => ['required', Rule::in(self::TYPE_MAP)],
+            $prefix . 'type' => ['required', Rule::in(array_keys(self::TYPE_MAP))],
             $prefix . 'start' => 'required|date',
             $prefix . 'end' => 'nullable|date',
             $prefix . 'frequency' => 'required|integer',
