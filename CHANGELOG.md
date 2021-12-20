@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.2.0](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.1.1...1.2.0) (2021-12-20)
+### Features
+
+* Add validation rules for Laravel ([8d564d](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/8d564dfe815e64ae16c6b545c15e207476a4dd28))
+
+
+---
+
 ## [1.1.1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.1.0...1.1.1) (2021-12-17)
 ### Bug Fixes
 
