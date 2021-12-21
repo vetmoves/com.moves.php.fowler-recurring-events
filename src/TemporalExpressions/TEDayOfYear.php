@@ -85,7 +85,7 @@ class TEDayOfYear extends ACTemporalExpression
 
         $class = static::TYPE;
 
-        $requiredIfRule = "required_if:type,$class";
+        $requiredIfRule = "sometimes|required_if:type,$class";
 
         return [
             $prefix . 'day' => "$requiredIfRule|integer|gte:1|lte:31",

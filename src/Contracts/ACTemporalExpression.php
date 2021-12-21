@@ -133,12 +133,12 @@ abstract class ACTemporalExpression
         $prefix = empty($key) ? '' : "${key}.";
 
         return [
-            $prefix . 'type' => ['required', Rule::in(array_keys(self::TYPE_MAP))],
-            $prefix . 'start' => 'required|date',
-            $prefix . 'end' => 'nullable|date',
-            $prefix . 'frequency' => 'required|integer',
-            $prefix . 'ignore_dates' => 'nullable|array',
-            $prefix . 'ignore_dates.*' => 'required|date',
+            $prefix . 'type' => ['sometimes', 'required', Rule::in(array_keys(self::TYPE_MAP))],
+            $prefix . 'start' => 'sometimes|required|date',
+            $prefix . 'end' => 'sometimes|nullable|date',
+            $prefix . 'frequency' => 'sometimes|required|integer',
+            $prefix . 'ignore_dates' => 'sometimes|nullable|array',
+            $prefix . 'ignore_dates.*' => 'sometimes|required|date',
         ];
     }
 

@@ -79,7 +79,7 @@ class TEDaysOfWeek extends ACTemporalExpression
 
         $class = static::TYPE;
 
-        $requiredIfRule = "required_if:type,$class";
+        $requiredIfRule = "sometimes|required_if:type,$class";
 
         return [
             $prefix . 'days' => "$requiredIfRule|array",
