@@ -3,9 +3,11 @@
 namespace Tests\TestCases\Contracts;
 
 use Carbon\Carbon;
+use InvalidArgumentException;
 use Moves\FowlerRecurringEvents\Contracts\ACTemporalExpression;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDays;
 use PHPUnit\Framework\TestCase;
+use Tests\Models\ClassWithRecurrencePattern;
 
 class TemporalExpressionTest extends TestCase
 {
@@ -81,6 +83,17 @@ class TemporalExpressionTest extends TestCase
             ->setIgnoreDates([Carbon::create('2021-01-01')]);
 
         $this->assertEquals(json_encode($pattern->toArray()), $pattern->toJson());
+    }
+
+    public function testJsonEncode()
+    {
+        $pattern = TEDays::build(Carbon::create('2021-01-01'))
+            ->setEndDate(Carbon::create('2022-01-01'))
+            ->setFrequency(2)
+            ->setIgnoreDates([Carbon::create('2021-01-01')]);
+
+        $this->assertEquals($pattern->toArray(), $pattern->jsonSerialize());
+        $this->assertEquals(json_encode($pattern->toArray()), json_encode($pattern));
     }
 
     public function testValidationRules() {
@@ -198,5 +211,197 @@ class TemporalExpressionTest extends TestCase
         $pattern->seek(Carbon::create('2021-01-02'));
 
         $this->assertFalse($pattern->includesCurrent());
+    }
+
+    public function testIlluminateCastableSetNull()
+    {
+        $model = new ClassWithRecurrencePattern([
+            'pattern' => null
+        ]);
+
+        $this->assertNull($model->pattern);
+    }
+
+    public function testIlluminateCastableSetInstance()
+    {
+        $data = [
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $pattern = TEDays::create($data);
+
+        $model = new ClassWithRecurrencePattern([
+            'pattern' => $pattern
+        ]);
+
+        $this->assertInstanceOf(TEDays::class, $model->pattern);
+        $this->assertEquals($pattern->toArray(), $model->pattern->toArray());
+    }
+
+    public function testIlluminateCastableSetArray()
+    {
+        $data = [
+            'type' => TEDays::TYPE,
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $model = new ClassWithRecurrencePattern([
+            'pattern' => $data
+        ]);
+
+        $this->assertInstanceOf(TEDays::class, $model->pattern);
+        $this->assertEquals($data, $model->pattern->toArray());
+    }
+
+    public function testIlluminateCastableSetJson()
+    {
+        $data = [
+            'type' => TEDays::TYPE,
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $json = json_encode($data);
+
+        $model = new ClassWithRecurrencePattern([
+            'pattern' => $json
+        ]);
+
+        $this->assertInstanceOf(TEDays::class, $model->pattern);
+        $this->assertEquals($data, $model->pattern->toArray());
+    }
+
+    public function testIlluminateCastableSetOther()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new ClassWithRecurrencePattern([
+            'pattern' => 1
+        ]);
+    }
+
+    public function testIlluminateCastableGetInstance()
+    {
+        $data = [
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $pattern = TEDays::create($data);
+
+        $model = new ClassWithRecurrencePattern();
+
+        $model->attributes = [
+            'pattern' => $pattern
+        ];
+
+        $this->assertInstanceOf(TEDays::class, $model->pattern);
+    }
+
+    public function testIlluminateCastableGetArray()
+    {
+        $data = [
+            'type' => TEDays::TYPE,
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $model = new ClassWithRecurrencePattern();
+
+        $model->attributes = [
+            'pattern' => $data
+        ];
+
+        $this->assertInstanceOf(TEDays::class, $model->pattern);
+    }
+
+    public function testIlluminateCastableGetString()
+    {
+        $data = [
+            'type' => TEDays::TYPE,
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $json = json_encode($data);
+
+        $model = new ClassWithRecurrencePattern();
+
+        $model->attributes = [
+            'pattern' => $json
+        ];
+
+        $this->assertInstanceOf(TEDays::class, $model->pattern);
+    }
+
+    public function testIlluminateCastableGetOther()
+    {
+        $model = new ClassWithRecurrencePattern();
+
+        $model->attributes = [
+            'pattern' => 1
+        ];
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $model->pattern;
+    }
+
+    public function testIlluminateCastableToArray()
+    {
+        $data = [
+            'type' => TEDays::TYPE,
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $model = new ClassWithRecurrencePattern([
+            'pattern' => $data
+        ]);
+
+        $modelData = $model->toArray();
+
+        $this->assertArrayHasKey('pattern', $modelData);
+        $this->assertIsArray($modelData['pattern']);
+
+        $this->assertArrayHasKey('start', $modelData['pattern']);
+        $this->assertIsString($modelData['pattern']['start']);
+
+        $this->assertArrayHasKey('end', $modelData['pattern']);
+        $this->assertIsString($modelData['pattern']['end']);
+
+        $this->assertArrayHasKey('frequency', $modelData['pattern']);
+        $this->assertIsInt($modelData['pattern']['frequency']);
+    }
+
+    public function testIlluminateCastableToJson()
+    {
+        $data = [
+            'type' => TEDays::TYPE,
+            'start' => Carbon::create('2021-01-01')->toISOString(),
+            'end' => Carbon::create('2022-01-01')->toISOString(),
+            'frequency' => 2
+        ];
+
+        $attributes = [
+            'pattern' => $data
+        ];
+
+        $attributesJson = json_encode($attributes);
+
+        $model = new ClassWithRecurrencePattern($attributes);
+
+        $modelJson = $model->toJson();
+
+        $this->assertEquals($attributesJson, $modelJson);
     }
 }

@@ -20,7 +20,9 @@
         "phpunit/phpunit": "^9.5",
         "captainhook/captainhook": "^5.10",
         "marcocesarato/php-conventional-changelog": "^1.12",
-        "moves/conventional-commits": "^1.0"
+        "moves/conventional-commits": "^1.0",
+        "illuminate/database": "^8.78",
+        "ext-http": "*"
     },
     "autoload": {
         "psr-4": {

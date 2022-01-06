@@ -4,14 +4,20 @@ namespace Moves\FowlerRecurringEvents\Contracts;
 
 use Carbon\Carbon;
 use DateTimeInterface;
+use Illuminate\Contracts\Database\Eloquent\Castable;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
+use JsonSerializable;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfMonth;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfWeekOfMonth;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDayOfYear;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDays;
 use Moves\FowlerRecurringEvents\TemporalExpressions\TEDaysOfWeek;
 
-abstract class ACTemporalExpression
+abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, JsonSerializable
 {
     //region Setup
     private const TYPE_MAP = [
@@ -116,16 +122,22 @@ abstract class ACTemporalExpression
         ];
 
         return array_filter($data, function ($element) {
-            return !is_null($element);
+            return !is_null($element) && !(is_array($element) && empty($element));
         });
     }
 
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
     /**
+     * @param int $options
      * @return string
      */
-    public function toJson(): string
+    public function toJson($options = 0): string
     {
-        return json_encode($this->toArray());
+        return json_encode($this->toArray(), $options);
     }
 
     protected static function VALIDATION_RULES_SHARED(string $key = null): array
@@ -165,6 +177,56 @@ abstract class ACTemporalExpression
             static::VALIDATION_RULES_SHARED($key),
             static::VALIDATION_RULES_TYPE($key)
         );
+    }
+    //endregion
+
+    //region Castable
+    public static function castUsing(array $arguments)
+    {
+        return new class implements CastsAttributes
+        {
+            public function get($model, string $key, $value, array $attributes)
+            {
+                if (is_null($value)) {
+                    return null;
+                }
+
+                if ($value instanceof ACTemporalExpression) {
+                    return $value;
+                }
+
+                if (is_array($value)) {
+                    return ACTemporalExpression::create($value);
+                } elseif (is_string($value)) {
+                    return ACTemporalExpression::fromJson($value);
+                }
+
+                $class = ACTemporalExpression::class;
+                throw new InvalidArgumentException("Value must be of type [{$class}], string, array, or null");
+            }
+
+            public function set($model, string $key, $value, array $attributes)
+            {
+                if (is_null($value)) {
+                    return null;
+                }
+
+                if (is_array($value)) {
+                    return json_encode($value);
+                }
+
+                if (is_string($value)) {
+                    return $value;
+                }
+
+                if (! $value instanceof ACTemporalExpression) {
+                    $class = ACTemporalExpression::class;
+                    throw new InvalidArgumentException("Value must be of type [{$class}], array, or null");
+                }
+
+                return $value->toJson();
+            }
+        };
     }
     //endregion
 
@@ -251,7 +313,7 @@ abstract class ACTemporalExpression
     }
     //endregion
 
-    //region Iteration
+    //region Iteration Default Implementation
     public function current(): ?DateTimeInterface
     {
         return $this->current;
@@ -295,13 +357,14 @@ abstract class ACTemporalExpression
     {
         return $this->includes($this->current);
     }
+    //endregion
 
+    //region Contract
     /**
      * Get the next iteration date of the pattern.
      * @return DateTimeInterface|null The next pattern iteration date. Null if invalid.
      */
     public abstract function next(): ?DateTimeInterface;
-    //endregion
 
     /**
      * Determine whether this Temporal Expression includes the given date.
@@ -309,4 +372,5 @@ abstract class ACTemporalExpression
      * @return bool
      */
     public abstract function includes(DateTimeInterface $date): bool;
+    //endregion
 }
