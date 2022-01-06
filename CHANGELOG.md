@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.0](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.2.4...1.3.0) (2022-01-06)
+### Features
+
+* Added Laravel class casting ([96101c](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/96101cf442912958ba15b68c6d82ab7026e9991f))
+
+
+---
+
 ## [1.2.4](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.2.3...1.2.4) (2021-12-21)
 ### Bug Fixes
 
