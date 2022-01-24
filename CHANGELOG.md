@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.0...1.3.1) (2022-01-24)
+### Bug Fixes
+
+* Remove end date from toArray if value is null ([9d9650](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/9d9650de2431dcda4d9525737fd0fad2633911bc))
+
+
+---
+
 ## [1.3.0](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.2.4...1.3.0) (2022-01-06)
 ### Features
 
