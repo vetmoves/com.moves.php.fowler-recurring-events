@@ -402,6 +402,6 @@ class TemporalExpressionTest extends TestCase
 
         $modelJson = $model->toJson();
 
-        $this->assertEquals($attributesJson, $modelJson);
+        $this->assertJsonStringEqualsJsonString($attributesJson, $modelJson);
     }
 }
