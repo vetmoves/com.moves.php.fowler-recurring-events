@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.3](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.2...1.3.3) (2022-04-04)
+### Bug Fixes
+
+* Allow null values on construct ([c947fa](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/c947fa504e95f4f0bade8bbb7068f98a77023115))
+* Handle null values on toArray ([10c236](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/10c2368e477c903223fbee332dd4e12a0257061d))
+
+
+---
+
 ## [1.3.2](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.1...1.3.2) (2022-04-04)
 ### Bug Fixes
 
