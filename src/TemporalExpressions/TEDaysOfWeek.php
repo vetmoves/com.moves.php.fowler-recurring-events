@@ -47,8 +47,8 @@ class TEDaysOfWeek extends ACTemporalExpression
     public static function create(array $options): ACTemporalExpression
     {
         return static::build(
-            Carbon::create($options['start']),
-            $options['days']
+            isset($options['start']) ? Carbon::create($options['start']) : null,
+            $options['days'] ?? null
         )->setupOptions($options);
     }
 

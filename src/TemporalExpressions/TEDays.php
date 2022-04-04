@@ -39,7 +39,7 @@ class TEDays extends ACTemporalExpression
     public static function create(array $options): ACTemporalExpression
     {
         return static::build(
-            Carbon::create($options['start'])
+            isset($options['start']) ? Carbon::create($options['start']) : null
         )->setupOptions($options);
     }
 

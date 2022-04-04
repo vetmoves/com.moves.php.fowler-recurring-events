@@ -50,9 +50,9 @@ class TEDayOfYear extends ACTemporalExpression
     public static function create(array $options): ACTemporalExpression
     {
         return static::build(
-            Carbon::create($options['start']),
-            $options['day'],
-            $options['month']
+            isset($options['start']) ? Carbon::create($options['start']) : null,
+            $options['day'] ?? null,
+            $options['month'] ?? null
         )->setupOptions($options);
     }
 
