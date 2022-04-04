@@ -111,14 +111,25 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
      */
     public function toArray(): array
     {
-        $data = [
-            'type' => static::TYPE,
-            'start' => Carbon::create($this->start)->toISOString(),
-            'frequency' => $this->frequency,
-            'ignore_dates' => array_map(function ($date) {
+        $data = [];
+
+        if (!is_null(static::TYPE)) {
+            $data['type'] = static::TYPE;
+        }
+
+        if (!is_null($this->start)) {
+            $data['start'] = Carbon::create($this->start)->toISOString();
+        }
+
+        if (!is_null($this->frequency)) {
+            $data['frequency'] = $this->frequency;
+        }
+
+        if (!is_null($this->ignoreDates)) {
+            $data['ignore_dates'] = array_map(function ($date) {
                 return Carbon::create($date)->toISOString();
-            }, $this->ignoreDates)
-        ];
+            }, $this->ignoreDates);
+        }
 
         if (!is_null($this->end)) {
             $data['end'] = Carbon::create($this->end)->toISOString();
