@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.2](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.1...1.3.2) (2022-04-04)
+### Bug Fixes
+
+* Use default values on create ([752dbf](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/752dbf07ba37dd85b7e405c7f59e4811dbdbd0e6))
+
+
+---
+
 ## [1.3.1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.0...1.3.1) (2022-01-24)
 ### Bug Fixes
 
