@@ -26,7 +26,7 @@ class TEDays extends ACTemporalExpression
      * TEDays constructor.
      * @param DateTimeInterface $start Starting date of repetition pattern
      */
-    public function __construct(DateTimeInterface $start)
+    public function __construct(?DateTimeInterface $start)
     {
         parent::__construct($start);
     }
@@ -48,7 +48,7 @@ class TEDays extends ACTemporalExpression
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @return TEDays
      */
-    public static function build(DateTimeInterface $start): TEDays
+    public static function build(?DateTimeInterface $start): TEDays
     {
         return new static($start);
     }

@@ -30,7 +30,7 @@ class TEDayOfMonth extends ACTemporalExpression
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
      */
-    public function __construct(DateTimeInterface $start, int $dayOfMonth)
+    public function __construct(?DateTimeInterface $start, ?int $dayOfMonth)
     {
         parent::__construct($start);
 
@@ -56,7 +56,7 @@ class TEDayOfMonth extends ACTemporalExpression
      * @param int $dayOfMonth Day of month (positive from beginning of month, negative from end of month)
      * @return TEDayOfMonth
      */
-    public static function build(DateTimeInterface $start, int $dayOfMonth): TEDayOfMonth
+    public static function build(?DateTimeInterface $start, ?int $dayOfMonth): TEDayOfMonth
     {
         return new static($start, $dayOfMonth);
     }

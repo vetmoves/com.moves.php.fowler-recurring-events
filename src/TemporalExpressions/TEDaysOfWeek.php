@@ -31,7 +31,7 @@ class TEDaysOfWeek extends ACTemporalExpression
      * @param DateTimeInterface $start Starting date of repetition pattern
      * @param int[]|int $days Array of days of week (1 for Monday, 7 for Sunday)
      */
-    public function __construct(DateTimeInterface $start, $days)
+    public function __construct(?DateTimeInterface $start, $days)
     {
         $this->validateIntArrayOrInt($days);
 
@@ -58,7 +58,7 @@ class TEDaysOfWeek extends ACTemporalExpression
      * @param int|int[] $days
      * @return TEDaysOfWeek
      */
-    public static function build(DateTimeInterface $start, $days): TEDaysOfWeek
+    public static function build(?DateTimeInterface $start, $days): TEDaysOfWeek
     {
         return new static($start, $days);
     }

@@ -34,7 +34,7 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
      * @param int $dayOfWeek Day of week (1 for Monday, 7 for Sunday)
      * @param int $weekOfMonth Week of month (positive from beginning of month, negative from end of month)
      */
-    public function __construct(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth)
+    public function __construct(?DateTimeInterface $start, ?int $dayOfWeek, int $weekOfMonth)
     {
         parent::__construct($start);
 
@@ -63,7 +63,7 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
      * @param int $weekOfMonth Week of month (positive from beginning of month, negative from end of month)
      * @return TEDayOfWeekOfMonth
      */
-    public static function build(DateTimeInterface $start, int $dayOfWeek, int $weekOfMonth): TEDayOfWeekOfMonth
+    public static function build(?DateTimeInterface $start, ?int $dayOfWeek, ?int $weekOfMonth): TEDayOfWeekOfMonth
     {
         return new static($start, $dayOfWeek, $weekOfMonth);
     }

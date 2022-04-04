@@ -47,7 +47,7 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
      * ACTemporalExpression constructor.
      * @param DateTimeInterface $start Starting date of repetition pattern
      */
-    public function __construct(DateTimeInterface $start)
+    public function __construct(?DateTimeInterface $start)
     {
         $this->start = $start;
     }

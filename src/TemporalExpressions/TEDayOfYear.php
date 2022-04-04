@@ -34,7 +34,7 @@ class TEDayOfYear extends ACTemporalExpression
      * @param int $day Day component of date
      * @param int $month Month component of date
      */
-    public function __construct(DateTimeInterface $start, int $day, int $month)
+    public function __construct(?DateTimeInterface $start, ?int $day, ?int $month)
     {
         parent::__construct($start);
 
@@ -63,7 +63,7 @@ class TEDayOfYear extends ACTemporalExpression
      * @param int $month Month component of date
      * @return TEDayOfYear
      */
-    public static function build(DateTimeInterface $start, int $day, int $month): TEDayOfYear
+    public static function build(?DateTimeInterface $start, ?int $day, ?int $month): TEDayOfYear
     {
         return new static($start, $day, $month);
     }
