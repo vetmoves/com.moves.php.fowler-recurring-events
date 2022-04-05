@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.6](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.5...1.3.6) (2022-04-05)
+### Bug Fixes
+
+* Set conditional requirement on validation rules ([57e9d2](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/57e9d2fca8d9ee3a2f8ad8bf72ea83e444ab9826))
+
+
+---
+
 ## [1.3.5](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.4...1.3.5) (2022-04-05)
 ### Bug Fixes
 
