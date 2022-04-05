@@ -88,8 +88,8 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
         $requiredIfRule = "required_if:${prefix}type,$class";
 
         return [
-            $prefix . 'day_of_week' => "$requiredIfRule|integer|gte:1|lte:7",
-            $prefix . 'week_of_month' => "$requiredIfRule|integer|gte:-6|lte:6"
+            $prefix . 'day_of_week' => "${requiredIfRule}|integer|gte:1|lte:7",
+            $prefix . 'week_of_month' => "${requiredIfRule}|integer|gte:-6|lte:6"
         ];
     }
     //endregion

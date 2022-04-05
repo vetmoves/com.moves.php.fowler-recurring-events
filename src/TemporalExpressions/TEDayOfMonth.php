@@ -80,7 +80,7 @@ class TEDayOfMonth extends ACTemporalExpression
         $requiredIfRule = "required_if:${prefix}type,$class";
 
         return [
-            $prefix . 'day_of_month' => "$requiredIfRule|integer|gte:-31|lte:31"
+            $prefix . 'day_of_month' => "${requiredIfRule}|integer|gte:-31|lte:31"
         ];
     }
     //endregion

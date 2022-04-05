@@ -88,8 +88,8 @@ class TEDayOfYear extends ACTemporalExpression
         $requiredIfRule = "required_if:${prefix}type,$class";
 
         return [
-            $prefix . 'day' => "$requiredIfRule|integer|gte:1|lte:31",
-            $prefix . 'month' => "$requiredIfRule|integer|gte:1|lte:12"
+            $prefix . 'day' => "${requiredIfRule}|integer|gte:1|lte:31",
+            $prefix . 'month' => "${requiredIfRule}|integer|gte:1|lte:12"
         ];
     }
     //endregion
