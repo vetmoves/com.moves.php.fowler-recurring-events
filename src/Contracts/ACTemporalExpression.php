@@ -158,13 +158,15 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
     {
         $prefix = empty($key) ? '' : "${key}.";
 
+        $requiredRule = empty($key) ? 'required' : "required_with:${key}";
+
         return [
-            $prefix . 'type' => ['required', Rule::in(array_keys(self::TYPE_MAP))],
-            $prefix . 'start' => 'required|date',
+            $prefix . 'type' => [$requiredRule, Rule::in(array_keys(self::TYPE_MAP))],
+            $prefix . 'start' => "${requiredRule}|date",
             $prefix . 'end' => 'nullable|date',
             $prefix . 'frequency' => 'required|integer',
             $prefix . 'ignore_dates' => 'nullable|array',
-            $prefix . 'ignore_dates.*' => 'required|date',
+            $prefix . 'ignore_dates.*' => 'sometimes|required|date',
         ];
     }
 
