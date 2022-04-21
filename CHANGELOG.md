@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.8](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.7...1.3.8) (2022-04-21)
+### Bug Fixes
+
+* Return options array instead of null for invalid temporal expression cration ([63182f](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/63182fd8aa03756c9288c0b9bd172844e12ca8e9))
+
+
+---
+
 ## [1.3.7](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.6...1.3.7) (2022-04-05)
 ### Bug Fixes
 
