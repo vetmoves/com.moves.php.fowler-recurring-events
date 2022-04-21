@@ -54,9 +54,9 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
 
     /**
      * @param string $json
-     * @return ACTemporalExpression|null
+     * @return ACTemporalExpression|array
      */
-    public static function fromJson(string $json): ?ACTemporalExpression
+    public static function fromJson(string $json)
     {
         $data = json_decode($json, true);
         return self::create($data);
@@ -64,9 +64,9 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
 
     /**
      * @param array $options
-     * @return ACTemporalExpression|null
+     * @return ACTemporalExpression|array
      */
-    public static function create(array $options): ?ACTemporalExpression
+    public static function create(array $options)
     {
         if (isset($options['type'])) {
             $class = array_key_exists($options['type'], self::TYPE_MAP)
@@ -78,7 +78,7 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
             }
         }
 
-        return null;
+        return $options;
     }
 
     /**
