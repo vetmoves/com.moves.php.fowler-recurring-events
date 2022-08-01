@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.9](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.8...1.3.9) (2022-08-01)
+### Bug Fixes
+
+* Add end after start validation rule ([c7549e](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/c7549e9d69a53c8c8c58e32f3adc3ab29d546d90))
+* Add frequency minimum validation rule ([54c60f](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/54c60f9220ba49a5602d3620a8d316f36395832a))
+
+
+---
+
 ## [1.3.8](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.7...1.3.8) (2022-04-21)
 ### Bug Fixes
 
