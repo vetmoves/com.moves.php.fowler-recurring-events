@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.3.10](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.9...1.3.10) (2022-08-10)
+### Bug Fixes
+
+* Allow setting null end date ([b0d4af](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/b0d4afa3a960689b2ac926b39964e0737ec7efdd))
+
+
+---
+
 ## [1.3.9](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.8...1.3.9) (2022-08-01)
 ### Bug Fixes
 
