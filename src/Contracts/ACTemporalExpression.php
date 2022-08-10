@@ -256,10 +256,10 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
     }
 
     /**
-     * @param DateTimeInterface $end
+     * @param DateTimeInterface|null $end
      * @return $this
      */
-    public function setEndDate(DateTimeInterface $end): ACTemporalExpression
+    public function setEndDate(?DateTimeInterface $end): ACTemporalExpression
     {
         $this->end = $end;
         return $this;
