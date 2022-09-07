@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [2.0.0](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.10...2.0.0) (2022-09-07)
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade to PHP 8.1 and Laravel 9 ([f39d85](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/f39d852c9ebd9c64156418abc761225170d0d787))
+
+
+---
+
 ## [1.3.10](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/1.3.9...1.3.10) (2022-08-10)
 ### Bug Fixes
 
