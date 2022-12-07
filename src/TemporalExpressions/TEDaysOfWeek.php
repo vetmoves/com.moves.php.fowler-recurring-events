@@ -243,9 +243,7 @@ class TEDaysOfWeek extends ACTemporalExpression
 
         return $instance >= $start
             && (is_null($end) || $instance <= $end)
-            && collect($this->days)->contains(function ($day) use ($instance) {
-                return $day % 7 === $instance->dayOfWeek;
-            })
+            && in_array((new Carbon($date))->dayOfWeek, $this->days)
             && $this->hasCorrectFrequencyFromStart($instance, $start)
             && !$this->isIgnored($instance);
     }

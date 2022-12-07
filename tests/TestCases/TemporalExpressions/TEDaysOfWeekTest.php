@@ -377,16 +377,4 @@ class TEDaysOfWeekTest extends TestCase
         $next = $pattern->next();
         $this->assertEquals('2021-01-18', $next->format('Y-m-d'));
     }
-
-    // Make sure Sunday is included in the pattern
-    public function testDayResolvesIncludingSundayFrom7()
-    {
-        $pattern1 = TEDaysOfWeek::build(Carbon::create('2022-12-01'), [1, 2, 3, 4, 5, 6, 7])
-            ->setFrequency(1);
-        
-        $testDate1 = Carbon::create('2022-12-11');
-            
-        $result1 = $pattern1->includes($testDate1);
-        $this->assertTrue($result1);
-    }
 }
