@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [2.0.2](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/2.0.1...2.0.2) (2022-12-07)
+
+### Bug Fixes
+
+* Make sure both 0 and 7 work for Sunday ([f7cfd5](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/f7cfd5b73586f36eeb82934aca378054e3131cfc))
+
+
+---
+
 ## [2.0.1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/2.0.0...2.0.1) (2022-12-07)
 
 
