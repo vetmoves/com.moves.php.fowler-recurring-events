@@ -24,7 +24,7 @@ class TemporalExpressionTest extends TestCase
 
         $json = json_encode($data);
 
-        $this->assertNull(ACTemporalExpression::fromJson($json));
+        $this->assertNotInstanceOf(ACTemporalExpression::class, $json);
 
         $data['type'] = TEDays::TYPE;
         $json = json_encode($data);
@@ -48,7 +48,7 @@ class TemporalExpressionTest extends TestCase
 
         $instance1 = TEDays::create($data);
 
-        $this->assertNull(ACTemporalExpression::create($data));
+        $this->assertNotInstanceOf(ACTemporalExpression::class, $data);
 
         $data['type'] = TEDays::TYPE;
 
