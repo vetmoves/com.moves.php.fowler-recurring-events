@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [4.0.0-beta.1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/3.0.0...4.0.0-beta.1) (2023-05-04)
+
+### ⚠ BREAKING CHANGES
+
+* Recurrence pattern end date to be exclusive, considering time ([8469c2](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/8469c29483bc5b781a2d053493992dce3590ee83))
+
+
+---
+
 ## [3.0.0](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/2.0.4...3.0.0) (2023-04-10)
 
 ### ⚠ BREAKING CHANGES
