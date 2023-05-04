@@ -102,7 +102,7 @@ class TEDayOfWeekOfMonthTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testCorrectDateOnPatternEndReturnsTrue()
+    public function testCorrectDateOnPatternEndReturnsFalse()
     {
         $pattern = TEDayOfWeekOfMonth::build(Carbon::create('2021-01-04'), 1, 1)
             ->setEndDate(Carbon::create('2021-02-01'));
@@ -110,7 +110,7 @@ class TEDayOfWeekOfMonthTest extends TestCase
 
         $result = $pattern->includes($testDate);
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     public function testBasicIncorrectDateReturnsFalse()

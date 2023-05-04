@@ -171,12 +171,12 @@ class TEDayOfYear extends ACTemporalExpression
      */
     public function includes(DateTimeInterface $date): bool
     {
-        $start = (new Carbon($this->start))->setTime(0, 0);
-        $end = is_null($this->end) ? null : (new Carbon($this->end))->setTime(0, 0);
-        $instance = (new Carbon($date))->setTime(0, 0);
+        $start = (new Carbon($this->start));
+        $end = is_null($this->end) ? null : (new Carbon($this->end));
+        $instance = (new Carbon($date));
 
         return $instance >= $start
-            && (is_null($end) || $instance <= $end)
+            && (is_null($end) || $instance < $end)
             && $this->dateMatchesAccountingForLeapYear($instance)
             && $this->hasCorrectFrequencyFromStart($instance, $start)
             && !$this->isIgnored($instance);

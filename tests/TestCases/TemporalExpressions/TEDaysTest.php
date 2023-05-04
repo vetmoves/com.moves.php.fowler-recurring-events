@@ -94,7 +94,7 @@ class TEDaysTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testCorrectDateOnPatternEndReturnsTrue()
+    public function testCorrectDateOnPatternEndReturnsFalse()
     {
         $pattern = TEDays::build(Carbon::create('2021-01-01'))
             ->setEndDate(Carbon::create('2021-01-31'));
@@ -102,7 +102,7 @@ class TEDaysTest extends TestCase
 
         $result = $pattern->includes($testDate);
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     public function testBasicIncorrectDateReturnsFalse()

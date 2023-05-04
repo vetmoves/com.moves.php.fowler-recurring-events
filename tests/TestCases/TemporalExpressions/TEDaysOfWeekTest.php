@@ -99,7 +99,7 @@ class TEDaysOfWeekTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testCorrectDateOnPatternEndReturnsTrue()
+    public function testCorrectDateOnPatternEndReturnsFalse()
     {
         $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-04'), 1)
             ->setEndDate(Carbon::create('2021-01-25'));
@@ -107,7 +107,7 @@ class TEDaysOfWeekTest extends TestCase
 
         $result = $pattern->includes($testDate);
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     public function testIntOrIntArrayTypingIsEnforced()
