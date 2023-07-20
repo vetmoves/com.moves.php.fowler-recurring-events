@@ -158,8 +158,10 @@ class TEDayOfYear extends ACTemporalExpression
         return $dateMatchesExactly || $leapDayMatchesMarch1;
     }
 
-    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    protected function hasCorrectFrequencyFromStart(Carbon $instance): bool
     {
+        $start = Carbon::create($this->start)->setTimezone($instance->getTimezone());
+
         $diffInYears = $instance->year - $start->year;
 
         return $diffInYears % $this->frequency == 0;
@@ -178,7 +180,7 @@ class TEDayOfYear extends ACTemporalExpression
         return $instance >= $start
             && (is_null($end) || $instance < $end)
             && $this->dateMatchesAccountingForLeapYear($instance)
-            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && $this->hasCorrectFrequencyFromStart($instance)
             && !$this->isIgnored($instance);
     }
 }

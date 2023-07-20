@@ -295,8 +295,10 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
         return $imaginaryDate->weekOfMonth == abs($this->weekOfMonth);
     }
 
-    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    protected function hasCorrectFrequencyFromStart(Carbon $instance): bool
     {
+        $start = Carbon::create($this->start)->setTimezone($instance->getTimezone());
+        
         $diffInYears = $instance->year - $start->year;
         $diffInMonths = $instance->month + (12 * $diffInYears) - $start->month;
 
@@ -317,7 +319,7 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
             && (is_null($end) || $instance < $end)
             && $this->dayOfWeekMatches($instance)
             && $this->weekOfMonthMatches($instance)
-            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && $this->hasCorrectFrequencyFromStart($instance)
             && !$this->isIgnored($instance);
     }
 }

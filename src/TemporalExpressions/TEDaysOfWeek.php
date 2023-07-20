@@ -226,8 +226,10 @@ class TEDaysOfWeek extends ACTemporalExpression
         }
     }
 
-    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    protected function hasCorrectFrequencyFromStart(Carbon $instance): bool
     {
+        $start = Carbon::create($this->start)->setTimezone($instance->getTimezone());
+
         return $start->diffInWeeks($instance) % $this->frequency == 0;
     }
     //endregion
@@ -246,7 +248,7 @@ class TEDaysOfWeek extends ACTemporalExpression
             && collect($this->days)->contains(function ($day) use ($instance) {
                 return $day % 7 === $instance->dayOfWeek;
             })
-            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && $this->hasCorrectFrequencyFromStart($instance)
             && !$this->isIgnored($instance);
     }
 }

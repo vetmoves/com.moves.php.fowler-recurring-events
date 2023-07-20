@@ -254,8 +254,10 @@ class TEDayOfMonth extends ACTemporalExpression
         return ($daysInMonth + 1) - abs($this->dayOfMonth) == $instance->day;
     }
 
-    protected function hasCorrectFrequencyFromStart(Carbon $instance, Carbon $start): bool
+    protected function hasCorrectFrequencyFromStart(Carbon $instance): bool
     {
+        $start = Carbon::create($this->start)->setTimezone($instance->getTimezone());
+
         $diffInYears = $instance->year - $start->year;
         $diffInMonths = $instance->month + (12 * $diffInYears) - $start->month;
 
@@ -279,7 +281,7 @@ class TEDayOfMonth extends ACTemporalExpression
                 $this->dayFromStartMatches($instance) :
                 $this->dayFromEndMatches($instance)
             )
-            && $this->hasCorrectFrequencyFromStart($instance, $start)
+            && $this->hasCorrectFrequencyFromStart($instance)
             && !$this->isIgnored($instance);
     }
 }
