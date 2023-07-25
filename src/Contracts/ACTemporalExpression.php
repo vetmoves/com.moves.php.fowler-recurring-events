@@ -62,7 +62,10 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
 
         if (array_key_exists('timezone', $data)) {
             $data['start'] = Carbon::create($data['start'])->setTimezone($data['timezone']);
-            $data['end'] = Carbon::create($data['end'])->setTimezone($data['timezone']);
+
+            if (array_key_exists('end', $data)) {
+                $data['end'] = Carbon::create($data['end'])->setTimezone($data['timezone']);
+            }
         }
 
         return self::create($data);
