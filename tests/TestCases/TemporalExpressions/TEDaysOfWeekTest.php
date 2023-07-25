@@ -25,13 +25,13 @@ class TEDaysOfWeekTest extends TestCase
         $pattern = TEDaysOfWeek::create($data);
 
         $this->assertEquals($data['days'], $pattern->getDays());
-        $this->assertEquals($data['start'], $pattern->getStart()->toIsoString());
-        $this->assertEquals($data['end'], $pattern->getEnd()->toIsoString());
+        $this->assertEquals($data['start'], $pattern->getStart()->toISOString());
+        $this->assertEquals($data['end'], $pattern->getEnd()->toISOString());
         $this->assertEquals($data['frequency'], $pattern->getFrequency());
         $this->assertEquals(
             $data['ignore_dates'],
             array_map(function ($date) {
-                return $date->toIsoString();
+                return $date->toISOString();
             }, $pattern->getIgnoreDates())
         );
         $this->assertEquals($data, $pattern->toArray());
@@ -226,9 +226,9 @@ class TEDaysOfWeekTest extends TestCase
         $this->assertFalse($pattern->includes($testDate));
     }
 
-    public function testDiffInWeeksSameAcrossTimezones()
+    public function testFrequencyDiffSameAcrossTimezones()
     {
-        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01 05:00:00'), [5])
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01 00:00:00 America/New_York'), [5])
             ->setFrequency(2);
 
         $testDate1 = Carbon::create('2021-07-02 America/New_York');

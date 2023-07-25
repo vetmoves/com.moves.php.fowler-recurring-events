@@ -27,13 +27,13 @@ class TEDayOfYearTest extends TestCase
 
         $this->assertEquals($data['day'], $pattern->getDay());
         $this->assertEquals($data['month'], $pattern->getMonth());
-        $this->assertEquals($data['start'], $pattern->getStart()->toIsoString());
-        $this->assertEquals($data['end'], $pattern->getEnd()->toIsoString());
+        $this->assertEquals($data['start'], $pattern->getStart()->toISOString());
+        $this->assertEquals($data['end'], $pattern->getEnd()->toISOString());
         $this->assertEquals($data['frequency'], $pattern->getFrequency());
         $this->assertEquals(
             $data['ignore_dates'],
             array_map(function ($date) {
-                return $date->toIsoString();
+                return $date->toISOString();
             }, $pattern->getIgnoreDates())
         );
         $this->assertEquals($data, $pattern->toArray());
@@ -187,6 +187,24 @@ class TEDayOfYearTest extends TestCase
         $pattern->setIgnoreDates([$testDate]);
 
         $this->assertFalse($pattern->includes($testDate));
+    }
+
+    public function testFrequencyDiffSameAcrossTimezones()
+    {
+        $pattern = TEDayOfYear::build(Carbon::create('2021-01-01 00:00:00 America/New_York'), 1, 1)
+            ->setFrequency(2);
+
+        $testDate1 = Carbon::create('2022-01-01 America/New_York');
+        $testDate2 = Carbon::create('2023-01-01 America/New_York');
+
+        $this->assertFalse($pattern->includes($testDate1));
+        $this->assertTrue($pattern->includes($testDate2));
+
+        $testDate1->setTimezone('UTC');
+        $testDate2->setTimezone('UTC');
+
+        $this->assertFalse($pattern->includes($testDate1));
+        $this->assertTrue($pattern->includes($testDate2));
     }
 
     public function testFirstNextWithStartInPatternSelectsStartDate()
