@@ -39,7 +39,7 @@ class TEDays extends ACTemporalExpression
     public static function create(array $options): ACTemporalExpression
     {
         return static::build(
-            isset($options['start']) ? Carbon::create($options['start']) : null
+            isset($options['start']) ? Carbon::create($options['start'])->setTimezone($options['timezone']) : null
         )->setupOptions($options);
     }
 
@@ -87,9 +87,14 @@ class TEDays extends ACTemporalExpression
     //region Helpers
     protected function hasCorrectFrequencyFromStart(Carbon $instance): bool
     {
-        $start = Carbon::create($this->start)->setTimezone($instance->getTimezone());
+        $start = Carbon::create($this->start)
+            ->setTime(0, 0);
 
-        return $start->diffInDays($instance) % $this->frequency == 0;
+        $instanceDay = Carbon::create($instance)
+            ->setTimezone($start->timezone)
+            ->setTime(0, 0);
+
+        return $start->diffInDays($instanceDay) % $this->frequency == 0;
     }
     //endregion
 

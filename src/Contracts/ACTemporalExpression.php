@@ -59,6 +59,12 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
     public static function fromJson(string $json)
     {
         $data = json_decode($json, true);
+
+        if (array_key_exists('timezone', $data)) {
+            $data['start'] = Carbon::create($data['start'])->setTimezone($data['timezone']);
+            $data['end'] = Carbon::create($data['end'])->setTimezone($data['timezone']);
+        }
+
         return self::create($data);
     }
 
@@ -92,12 +98,12 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
         }
 
         if (isset($options['end'])) {
-            $this->setEndDate(Carbon::create($options['end']));
+            $this->setEndDate(Carbon::create($options['end'])->setTimezone($options['timezone']));
         }
 
         if (isset($options['ignore_dates']) && is_array($options['ignore_dates'])) {
-            $dates = array_map(function($date) {
-                return Carbon::create($date);
+            $dates = array_map(function($date) use ($options) {
+                return Carbon::create($date)->setTimezone($options['timezone']);
             }, $options['ignore_dates']);
 
             $this->setIgnoreDates($dates);
@@ -135,12 +141,14 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
             $data['end'] = Carbon::create($this->end)->toISOString();
         }
 
+        $data['timezone'] = $this->start->getTimezone()->getName();
+
         return array_filter($data, function ($element) {
             return !is_null($element) && !(is_array($element) && empty($element));
         });
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }
@@ -156,15 +164,15 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
 
     protected static function VALIDATION_RULES_SHARED(string $key = null): array
     {
-        $prefix = empty($key) ? '' : "${key}.";
+        $prefix = empty($key) ? '' : "{$key}.";
 
-        $requiredRule = empty($key) ? 'required' : "required_with:${key}";
+        $requiredRule = empty($key) ? 'required' : "required_with:{$key}";
 
         return [
             $prefix . 'type' => [$requiredRule, Rule::in(array_keys(self::TYPE_MAP))],
-            $prefix . 'start' => "${requiredRule}|date",
+            $prefix . 'start' => "{$requiredRule}|date",
             $prefix . 'end' => "nullable|date|after:{$prefix}start",
-            $prefix . 'frequency' => "${requiredRule}|integer|min:1",
+            $prefix . 'frequency' => "{$requiredRule}|integer|min:1",
             $prefix . 'ignore_dates' => 'nullable|array',
             $prefix . 'ignore_dates.*' => 'sometimes|required|date',
         ];
@@ -317,10 +325,12 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
      */
     public function isIgnored(DateTimeInterface $date): bool
     {
-        $dateString = $date->format('Y-m-d');
+        $dateString = Carbon::create($date)
+            ->setTimezone($this->start->getTimezone())
+            ->format('Y-m-d');
 
         foreach ($this->ignoreDates as $ignoreDate) {
-            if ($dateString == $ignoreDate->format('Y-m-d')) {
+            if ($dateString == Carbon::create($ignoreDate)->setTimezone($this->start->getTimezone())->format('Y-m-d')) {
                 return true;
             }
         }

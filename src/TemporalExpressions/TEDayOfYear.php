@@ -50,7 +50,7 @@ class TEDayOfYear extends ACTemporalExpression
     public static function create(array $options): ACTemporalExpression
     {
         return static::build(
-            isset($options['start']) ? Carbon::create($options['start']) : null,
+            isset($options['start']) ? Carbon::create($options['start'])->setTimezone($options['timezone']) : null,
             $options['day'] ?? null,
             $options['month'] ?? null
         )->setupOptions($options);
@@ -81,15 +81,15 @@ class TEDayOfYear extends ACTemporalExpression
 
     protected static function VALIDATION_RULES_TYPE(string $key = null): array
     {
-        $prefix = empty($key) ? '' : "${key}.";
+        $prefix = empty($key) ? '' : "{$key}.";
 
         $class = static::TYPE;
 
-        $requiredIfRule = "required_if:${prefix}type,$class";
+        $requiredIfRule = "required_if:{$prefix}type,$class";
 
         return [
-            $prefix . 'day' => "${requiredIfRule}|integer|gte:1|lte:31",
-            $prefix . 'month' => "${requiredIfRule}|integer|gte:1|lte:12"
+            $prefix . 'day' => "{$requiredIfRule}|integer|gte:1|lte:31",
+            $prefix . 'month' => "{$requiredIfRule}|integer|gte:1|lte:12"
         ];
     }
     //endregion
@@ -160,9 +160,14 @@ class TEDayOfYear extends ACTemporalExpression
 
     protected function hasCorrectFrequencyFromStart(Carbon $instance): bool
     {
-        $start = Carbon::create($this->start)->setTimezone($instance->getTimezone());
+        $start = Carbon::create($this->start)
+            ->setTime(0, 0);
 
-        $diffInYears = $instance->year - $start->year;
+        $instanceDay = Carbon::create($instance)
+            ->setTimezone($start->timezone)
+            ->setTime(0, 0);
+
+        $diffInYears = $instanceDay->year - $start->year;
 
         return $diffInYears % $this->frequency == 0;
     }

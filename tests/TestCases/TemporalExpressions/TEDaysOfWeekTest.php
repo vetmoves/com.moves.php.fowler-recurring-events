@@ -15,6 +15,7 @@ class TEDaysOfWeekTest extends TestCase
             'days' => [1, 2],
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'America/New_York',
             'frequency' => 2,
             'ignore_dates' => [
                 Carbon::create('2021-01-01')->toISOString()
@@ -38,19 +39,20 @@ class TEDaysOfWeekTest extends TestCase
 
     public function testToArray()
     {
-        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01'), [1, 2])
-            ->setEndDate(Carbon::create('2022-01-01'))
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01 UTC'), [1, 2])
+            ->setEndDate(Carbon::create('2022-01-01 UTC'))
             ->setFrequency(2)
-            ->setIgnoreDates([Carbon::create('2021-01-01')]);
+            ->setIgnoreDates([Carbon::create('2021-01-01 UTC')]);
 
         $this->assertEquals([
             'type' => TEDaysOfWeek::TYPE,
             'days' => [1, 2],
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2,
             'ignore_dates' => [
-                Carbon::create('2021-01-01')->toISOString()
+                Carbon::create('2021-01-01 UTC')->toISOString()
             ]
         ], $pattern->toArray());
     }
@@ -222,6 +224,24 @@ class TEDaysOfWeekTest extends TestCase
         $pattern->setIgnoreDates([$testDate]);
 
         $this->assertFalse($pattern->includes($testDate));
+    }
+
+    public function testDiffInWeeksSameAcrossTimezones()
+    {
+        $pattern = TEDaysOfWeek::build(Carbon::create('2021-01-01 05:00:00'), [5])
+            ->setFrequency(2);
+
+        $testDate1 = Carbon::create('2021-07-02 America/New_York');
+        $testDate2 = Carbon::create('2021-07-09 America/New_York');
+
+        $this->assertTrue($pattern->includes($testDate1));
+        $this->assertFalse($pattern->includes($testDate2));
+
+        $testDate1->setTimezone('UTC');
+        $testDate2->setTimezone('UTC');
+
+        $this->assertTrue($pattern->includes($testDate1));
+        $this->assertFalse($pattern->includes($testDate2));
     }
 
     public function testFirstNextWithStartInPatternSelectsStartDate()

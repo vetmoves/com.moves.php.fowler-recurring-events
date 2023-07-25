@@ -15,6 +15,7 @@ class TEDayOfMonthTest extends TestCase
             'day_of_month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'America/New_York',
             'frequency' => 2,
             'ignore_dates' => [
                 Carbon::create('2021-01-01')->toISOString()
@@ -38,19 +39,20 @@ class TEDayOfMonthTest extends TestCase
 
     public function testToArray()
     {
-        $pattern = TEDayOfMonth::build(Carbon::create('2021-01-01'), 1)
-            ->setEndDate(Carbon::create('2022-01-01'))
+        $pattern = TEDayOfMonth::build(Carbon::create('2021-01-01 UTC'), 1)
+            ->setEndDate(Carbon::create('2022-01-01 UTC'))
             ->setFrequency(2)
-            ->setIgnoreDates([Carbon::create('2021-01-01')]);
+            ->setIgnoreDates([Carbon::create('2021-01-01 UTC')]);
 
         $this->assertEquals([
             'type' => TEDayOfMonth::TYPE,
             'day_of_month' => 1,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2,
             'ignore_dates' => [
-                Carbon::create('2021-01-01')->toISOString()
+                Carbon::create('2021-01-01 UTC')->toISOString()
             ]
         ], $pattern->toArray());
     }

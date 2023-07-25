@@ -50,7 +50,7 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
     public static function create(array $options): ACTemporalExpression
     {
         return static::build(
-            isset($options['start']) ? Carbon::create($options['start']) : null,
+            isset($options['start']) ? Carbon::create($options['start'])->setTimezone($options['timezone']) : null,
             $options['day_of_week'] ?? null,
             $options['week_of_month'] ?? null
         )->setupOptions($options);
@@ -81,15 +81,15 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
 
     protected static function VALIDATION_RULES_TYPE(string $key = null): array
     {
-        $prefix = empty($key) ? '' : "${key}.";
+        $prefix = empty($key) ? '' : "{$key}.";
 
         $class = static::TYPE;
 
-        $requiredIfRule = "required_if:${prefix}type,$class";
+        $requiredIfRule = "required_if:{$prefix}type,$class";
 
         return [
-            $prefix . 'day_of_week' => "${requiredIfRule}|integer|gte:1|lte:7",
-            $prefix . 'week_of_month' => "${requiredIfRule}|integer|gte:-6|lte:6"
+            $prefix . 'day_of_week' => "{$requiredIfRule}|integer|gte:1|lte:7",
+            $prefix . 'week_of_month' => "{$requiredIfRule}|integer|gte:-6|lte:6"
         ];
     }
     //endregion
@@ -297,10 +297,15 @@ class TEDayOfWeekOfMonth extends ACTemporalExpression
 
     protected function hasCorrectFrequencyFromStart(Carbon $instance): bool
     {
-        $start = Carbon::create($this->start)->setTimezone($instance->getTimezone());
+        $start = Carbon::create($this->start)
+            ->setTime(0, 0);
+
+        $instanceDay = Carbon::create($instance)
+            ->setTimezone($start->timezone)
+            ->setTime(0, 0);
         
-        $diffInYears = $instance->year - $start->year;
-        $diffInMonths = $instance->month + (12 * $diffInYears) - $start->month;
+        $diffInYears = $instanceDay->year - $start->year;
+        $diffInMonths = $instanceDay->month + (12 * $diffInYears) - $start->month;
 
         return $diffInMonths % $this->frequency == 0;
     }

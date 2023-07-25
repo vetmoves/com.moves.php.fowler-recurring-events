@@ -16,6 +16,7 @@ class TemporalExpressionTest extends TestCase
         $data = [
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2,
             'ignore_dates' => [
                 Carbon::create('2021-01-01')->toISOString()
@@ -40,6 +41,7 @@ class TemporalExpressionTest extends TestCase
         $data = [
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2,
             'ignore_dates' => [
                 Carbon::create('2021-01-01')->toISOString()
@@ -59,18 +61,19 @@ class TemporalExpressionTest extends TestCase
 
     public function testToArray()
     {
-        $pattern = TEDays::build(Carbon::create('2021-01-01'))
-            ->setEndDate(Carbon::create('2022-01-01'))
+        $pattern = TEDays::build(Carbon::create('2021-01-01 UTC'))
+            ->setEndDate(Carbon::create('2022-01-01 UTC'))
             ->setFrequency(2)
-            ->setIgnoreDates([Carbon::create('2021-01-01')]);
+            ->setIgnoreDates([Carbon::create('2021-01-01 UTC')]);
 
         $this->assertEquals([
             'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2,
             'ignore_dates' => [
-                Carbon::create('2021-01-01')->toISOString()
+                Carbon::create('2021-01-01 UTC')->toISOString()
             ]
         ], $pattern->toArray());
     }
@@ -227,6 +230,7 @@ class TemporalExpressionTest extends TestCase
         $data = [
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
@@ -246,6 +250,7 @@ class TemporalExpressionTest extends TestCase
             'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
@@ -263,6 +268,7 @@ class TemporalExpressionTest extends TestCase
             'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
@@ -290,6 +296,7 @@ class TemporalExpressionTest extends TestCase
         $data = [
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
@@ -310,6 +317,7 @@ class TemporalExpressionTest extends TestCase
             'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
@@ -328,6 +336,7 @@ class TemporalExpressionTest extends TestCase
             'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
@@ -361,6 +370,7 @@ class TemporalExpressionTest extends TestCase
             'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
@@ -389,6 +399,7 @@ class TemporalExpressionTest extends TestCase
             'type' => TEDays::TYPE,
             'start' => Carbon::create('2021-01-01')->toISOString(),
             'end' => Carbon::create('2022-01-01')->toISOString(),
+            'timezone' => 'UTC',
             'frequency' => 2
         ];
 
