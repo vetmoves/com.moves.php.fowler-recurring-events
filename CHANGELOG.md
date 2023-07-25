@@ -4,6 +4,20 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [4.0.0-beta.5](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/3.0.0...4.0.0-beta.5) (2023-07-25)
+
+### ⚠ BREAKING CHANGES
+
+* Change recurrence pattern end date to be exclusive, considering time ([59f5b1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/59f5b1fcff6a3471c5b201dacba8f723c02c837e))
+* Store and respect timezone for all pattern dates ([28bb13](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/28bb1347d347a82820a20c97037cd184f266101b))
+
+### Bug Fixes
+
+* Respect instance timezone when evaluating frequency from pattern start ([d738b1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/d738b18d46e50584136ac07cc6d957e1820d1db8))
+
+
+---
+
 ## [4.0.0-beta.4](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/3.0.0...4.0.0-beta.4) (2023-07-25)
 
 ### ⚠ BREAKING CHANGES
