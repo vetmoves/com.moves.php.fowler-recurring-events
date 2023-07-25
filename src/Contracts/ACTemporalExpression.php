@@ -172,6 +172,7 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
             $prefix . 'type' => [$requiredRule, Rule::in(array_keys(self::TYPE_MAP))],
             $prefix . 'start' => "{$requiredRule}|date",
             $prefix . 'end' => "nullable|date|after:{$prefix}start",
+            $prefix . 'timezone' => "{$requiredRule}|timezone:all",
             $prefix . 'frequency' => "{$requiredRule}|integer|min:1",
             $prefix . 'ignore_dates' => 'nullable|array',
             $prefix . 'ignore_dates.*' => 'sometimes|required|date',
