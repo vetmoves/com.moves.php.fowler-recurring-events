@@ -39,7 +39,9 @@ class TEDays extends ACTemporalExpression
     public static function create(array $options): ACTemporalExpression
     {
         return static::build(
-            isset($options['start']) ? Carbon::create($options['start'])->setTimezone($options['timezone']) : null
+            isset($options['start']) 
+                ? Carbon::create($options['start'])->setTimezone($options['timezone'] ?? 'UTC') 
+                : null
         )->setupOptions($options);
     }
 
