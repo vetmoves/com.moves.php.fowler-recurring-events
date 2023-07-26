@@ -101,12 +101,12 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
         }
 
         if (isset($options['end'])) {
-            $this->setEndDate(Carbon::create($options['end'])->setTimezone($options['timezone']));
+            $this->setEndDate(Carbon::create($options['end'])->setTimezone($options['timezone'] ?? 'UTC'));
         }
 
         if (isset($options['ignore_dates']) && is_array($options['ignore_dates'])) {
             $dates = array_map(function($date) use ($options) {
-                return Carbon::create($date)->setTimezone($options['timezone']);
+                return Carbon::create($date)->setTimezone($options['timezone'] ?? 'UTC');
             }, $options['ignore_dates']);
 
             $this->setIgnoreDates($dates);
