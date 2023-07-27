@@ -248,7 +248,7 @@ class TEDaysOfWeek extends ACTemporalExpression
     {
         $start = (new Carbon($this->start));
         $end = is_null($this->end) ? null : (new Carbon($this->end));
-        $instance = (new Carbon($date));
+        $instance = (new Carbon($date))->setTimezone($start->timezone);
 
         return $instance >= $start
             && (is_null($end) || $instance < $end)
