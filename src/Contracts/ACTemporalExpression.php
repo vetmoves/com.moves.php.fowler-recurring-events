@@ -280,7 +280,7 @@ abstract class ACTemporalExpression implements Castable, Arrayable, Jsonable, Js
     /**
      * @return DateTimeInterface
      */
-    public function getEnd(): DateTimeInterface
+    public function getEnd(): ?DateTimeInterface
     {
         return $this->end;
     }
