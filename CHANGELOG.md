@@ -4,6 +4,24 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [4.0.0-beta.10](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/3.0.0...4.0.0-beta.10) (2023-08-01)
+
+### ⚠ BREAKING CHANGES
+
+* Change recurrence pattern end date to be exclusive, considering time ([59f5b1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/59f5b1fcff6a3471c5b201dacba8f723c02c837e))
+* Store and respect timezone for all pattern dates ([28bb13](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/28bb1347d347a82820a20c97037cd184f266101b))
+
+### Bug Fixes
+
+* Handle null end value in fromJson ([4214a4](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/4214a4def53177ad3fe6d8791c935e5f182e45ff))
+* Make new timezone field backwards-compatible ([423f3d](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/423f3d5a76ff1e03210eea873f5f3b01e9491c9a), [009c53](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/009c5382179059d256ba185d24ef6c5f5811fc70))
+* Make return value for getEnd optional ([ba1af2](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/ba1af22a4cc130b8078076ae81ce657e1145f889))
+* Respect instance timezone when evaluating frequency from pattern start ([d738b1](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/d738b18d46e50584136ac07cc6d957e1820d1db8))
+* Respect timezone when evaluating includes on all patterns ([bbfe74](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/commit/bbfe7498de5a78a79179566546682bd7ed09eb06))
+
+
+---
+
 ## [4.0.0-beta.9](https://github.com/vetmoves/com.moves.php.fowler-recurring-events/compare/3.0.0...4.0.0-beta.9) (2023-07-27)
 
 ### ⚠ BREAKING CHANGES
