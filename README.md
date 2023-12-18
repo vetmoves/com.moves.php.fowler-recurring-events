@@ -1,3 +1,6 @@
+# Abandoned
+This package is abandoned, and the source has been transferred to our primary application repository https://github.com/vetmoves/com.moves.web
+
 # FowlerRecurringEvents
 ## Introduction
 This library is an implementation of Martin Fowler's algorithms for recurring calendar events.
